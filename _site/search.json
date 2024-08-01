@@ -35,13 +35,6 @@
     "text": "Preparação dos dados\nNessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram normalizadas em função de possuírem diferentes escalas. Já as colunas categórias, estas foram codificadas da seguinte forma:\n\n\n\n\n\nColuna\nRótulos\n\n\n\n\nEscolaridade\nBásico: 0, Graduação: 1, Pós-graudação: 2\n\n\nEstado civil\nSolteiro: 0, Casado: 1, Divorciado: 2, Viúvo: 3\n\n\n\n\n\nPara o treino do modelo, utilizou-se as colunas:\n\n‘Age’, ‘Education_Level’, ‘Marital_Status’, ‘Children’, Income’, ‘Answered_Cmps’, ‘Recency’, ‘Total_Spent’, ‘MntWines’, ‘MntFruits’, ‘MntMeatProducts’, ‘MntFishProducts’, ‘MntSweetProducts’, ‘MntGoldProds’, ‘TotalPurchases’\n\nO conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 colunas."
   },
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "About this site"
-  },
-  {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Portfolio de Análise de Dados",
