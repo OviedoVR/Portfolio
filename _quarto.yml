@@ -1,0 +1,24 @@
+project:
+  type: website
+
+website:
+  title: "Portfolio"
+  navbar:
+    left:
+      - href: index.qmd
+      - href: segmentation.qmd
+        text: Segmentação de clientes
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: true
+    code-fold: false
+    code-block-bg: true
+    code-block-border-left: false
+    code-line-numbers: false
+    highlight-style: haddock
+
+
+

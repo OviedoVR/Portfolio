@@ -1,0 +1,14 @@
+---
+title: "Portfolio de Análise de Dados"
+author: "Vinícius Oviedo"
+lang: pt-br
+---
+
+Bem-vindo ao meu portfolio de Análise de Dados. Nesta página, você encontrará os seguintes projetos:
+
+
+- **Segmentação de clientes do setor alimentício com Machine Learning**
+- Teste A/B (em breve)
+- Precificiação baseada em dados (em breve)
+
+Desenvolvido com Quarto markdown (mais detalhes em <https://quarto.org/docs/websites>).

@@ -1,0 +1,51 @@
+[
+  {
+    "objectID": "segmentation.html",
+    "href": "segmentation.html",
+    "title": "Segementação de clientes com Machine Learning",
+    "section": "",
+    "text": "Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados com inúmeras informações sobre clientes contendo apsectos demográficos, padrões de compra e resultados de campanhas de marketing passadas.\n\nO método utilizado nesse projeto foi o CRISP-DM e a execução se deu via linguagem de programação Python."
+  },
+  {
+    "objectID": "segmentation.html#objetivo",
+    "href": "segmentation.html#objetivo",
+    "title": "Segementação de clientes com Machine Learning",
+    "section": "Objetivo",
+    "text": "Objetivo\nSegementar essa base de clientes de modo a obter grupos com personas bem definidas, que ajudem o negócio a tomar melhores decisões."
+  },
+  {
+    "objectID": "segmentation.html#premissas",
+    "href": "segmentation.html#premissas",
+    "title": "Segementação de clientes com Machine Learning",
+    "section": "Premissas",
+    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nA base de clientes é uma amostra representativa da população.\nA coleta de dados se deu aleatoreamente sem viéses de seleção.\nOs dados são de boa qualidade e atualizados."
+  },
+  {
+    "objectID": "segmentation.html#critérios-de-sucesso",
+    "href": "segmentation.html#critérios-de-sucesso",
+    "title": "Segementação de clientes com Machine Learning",
+    "section": "Critérios de sucesso",
+    "text": "Critérios de sucesso\nIdentificar no mínimo dois ou mais grupos de clientes, de forma que o negócio consiga entender cada grupo e promover uma boa experiência ao cliente ao longo do seu ciclo junto à empresa."
+  },
+  {
+    "objectID": "segmentation.html#preparação-dos-dados",
+    "href": "segmentation.html#preparação-dos-dados",
+    "title": "Segementação de clientes com Machine Learning",
+    "section": "Preparação dos dados",
+    "text": "Preparação dos dados\nNessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram normalizadas em função de possuírem diferentes escalas. Já as colunas categórias, estas foram codificadas da seguinte forma:\n\n\n\n\n\nColuna\nRótulos\n\n\n\n\nEscolaridade\nBásico: 0, Graduação: 1, Pós-graudação: 2\n\n\nEstado civil\nSolteiro: 0, Casado: 1, Divorciado: 2, Viúvo: 3\n\n\n\n\n\nPara o treino do modelo, utilizou-se as colunas:\n\n‘Age’, ‘Education_Level’, ‘Marital_Status’, ‘Children’, Income’, ‘Answered_Cmps’, ‘Recency’, ‘Total_Spent’, ‘MntWines’, ‘MntFruits’, ‘MntMeatProducts’, ‘MntFishProducts’, ‘MntSweetProducts’, ‘MntGoldProds’, ‘TotalPurchases’\n\nO conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 colunas."
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Portfolio de Análise de Dados",
+    "section": "",
+    "text": "Bem-vindo ao meu portfolio de Análise de Dados. Nesta página, você encontrará os seguintes projetos:\n\nSegmentação de clientes do setor alimentício com Machine Learning\nTeste A/B (em breve)\nPrecificiação baseada em dados (em breve)\n\nDesenvolvido com Quarto markdown (mais detalhes em https://quarto.org/docs/websites)."
+  }
+]

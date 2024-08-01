@@ -1,0 +1,569 @@
+---
+title: "Segementação de clientes com Machine Learning"
+author: "Vinícius Oviedo"
+lang: pt-br
+---
+
+# Contexto 
+
+Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados com inúmeras informações sobre clientes contendo apsectos demográficos, padrões de compra e resultados de campanhas de marketing passadas. 
+
+![](assets/clustering-illustration.png){width=90%}
+
+O método utilizado nesse projeto foi o CRISP-DM e a execução se deu via linguagem de programação Python.
+
+# Entendimento do negócio
+
+## Objetivo
+
+Segementar essa base de clientes de modo a obter grupos com personas bem definidas, que ajudem o negócio a tomar melhores decisões.
+
+## Premissas
+
+Como premissas para o projeto, tem-se:
+
+- A base de clientes é uma amostra representativa da população.
+- A coleta de dados se deu aleatoreamente sem viéses de seleção.
+- Os dados são de boa qualidade e atualizados.
+
+## Critérios de sucesso
+
+Identificar no mínimo dois ou mais grupos de clientes, de forma que o negócio consiga entender cada grupo e promover uma boa experiência ao cliente ao longo do seu ciclo junto à empresa.
+
+
+# Entendimento dos dados
+
+Os dados correspondem **2240 linhas** e **28 colunas** referentes a dados dos clientes, bem como resultados de campanhas de marketing. O dataset apresenta como dicionário de dados:
+
+| Coluna                | Descrição                                                            |
+|-----------------------|----------------------------------------------------------------------|
+| `ID`                  | Identificador único do cliente                                       |
+| `Year_Birth`          | Ano de nascimento do cliente                                         |
+| `Education`           | Nível de educação do cliente                                         |
+| `Marital_Status`      | Estado civil do cliente                                              |
+| `Income`              | Renda anual da família do cliente                                    |
+| `Kidhome`             | Número de crianças na família do cliente                             |
+| `Teenhome`            | Número de adolescentes na família do cliente                         |
+| `Dt_Customer`         | Data de inscrição do cliente na empresa                              |
+| `Recency`             | Número de dias desde a última compra do cliente                      |
+| `MntWines`            | Valor gasto em vinho nos últimos 2 anos (em U\$D)                    |
+| `MntFruits`           | Valor gasto em frutas nos últimos 2 anos (em U\$D)                   |
+| `MntMeatProducts`     | Valor gasto em carne nos últimos 2 anos (em U\$D)                    |
+| `MntFishProducts`     | Valor gasto em peixe nos últimos 2 anos (em U\$D)                    |
+| `MntSweetProducts`    | Valor gasto em doces nos últimos 2 anos (em U\$D)                    |
+| `MntGoldProds`        | Valor gasto em produtos Premium nos últimos 2 anos (em U\$D)         |
+| `NumDealsPurchases`   | Número de compras feitas com desconto                                |
+| `NumWebPurchases`     | Número de compras feitas através do site da empresa                  |
+| `NumCatalogPurchases` | Número de compras feitas usando um catálogo                          |
+| `NumStorePurchases`   | Número de compras feitas diretamente em lojas                        |
+| `NumWebVisitsMonth`   | Número de visitas ao site da empresa no último mês                   |
+| `AcceptedCmp3`        | 1 se o cliente aceitou a oferta na 3ª campanha, 0 caso contrário     |
+| `AcceptedCmp4`        | 1 se o cliente aceitou a oferta na 4ª campanha, 0 caso contrário     |
+| `AcceptedCmp5`        | 1 se o cliente aceitou a oferta na 5ª campanha, 0 caso contrário     |
+| `AcceptedCmp1`        | 1 se o cliente aceitou a oferta na 1ª campanha, 0 caso contrário     |
+| `AcceptedCmp2`        | 1 se o cliente aceitou a oferta na 2ª campanha, 0 caso contrário     |
+| `Response`            | 1 se o cliente aceitou a oferta na última campanha, 0 caso contrário |
+| `Complain`            | 1 se o cliente reclamou nos últimos 2 anos, 0 caso contrário         |
+| `Country`             | País do cliente (localização)                                        |
+
+
+A base original continha alguns dados ausentes, outliers (valores discrepantes) e colunas categóricas que precisaram ser codificadas (rótulos numéricos). Em resumo, obteve-se os seguintes insights da análise exploratória:
+
+* Os clientes possuem entre 24-84 anos, com média em torno de 55 anos.
+* Cerca de 89% dos clientes possuem ensino superior.
+* A base conta com estados civis de: solteiro, casado, divorciado e viúvo. Aproximadamente 35% da base vive sem um companheiro.
+* Cerca de 28% da base não tem filhos, enquanto 72% possui um ou mais filhos.
+* Tem-se várias faixas de renda entre os clientes, com mínimo de 1.730 USD, máximo de 154.000 USD e média de 52.200 USD anuais (desconsiderando outliers).
+* Cerca de 84% dos clientes não responderam nenhuma campanha, enquanto 16% responderam no mínimo 1 campanha.
+
+
+Colunas excluídas da análise:
+
+* `NumWebVisitsMonth`: não necessariamente as visitas convertem em compra, logo foi decidido pelo negócio a exlusão dessa coluna na fase de modelagem. 
+* `Complain`: 99% dos clientes não reclamaram, logo, essa coluna não contribuiria muito para a modelagem.
+* `Response`: se refere à compra, mas apenas na última campanha enviada, pouco representativa para a modelagem.
+
+Colunas modificas/novas colunas:
+
+* `Year_Birth` foi substituída por `Age` (cálculo de datas)
+* `Education` foi substituída por `Education_Level` que divide os clientes quanto a: *(i)* Básico, *(ii)* Graduação e *(iii)* Pós-Graduação.
+* `Dt_customer`foi substituída por `Days_as_Customer` (data máxima do dataset - data inicial como cliente)
+* `Kidhome` e `Teenhome` foram unificadas em `Children` (número de filhos totais)
+* Colunas do tipo `AcceptedCmp...` foi derivada em  `AcceptedCmps` (número de campanhas aceitas)
+* Nova coluna: `TotalPurchases` (Total de compras)
+
+> O notebook Python completo contendo a etapa de EDA e modelagem pode ser encontrado em [aqui](https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing).
+
+## Preparação dos dados
+
+Nessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram normalizadas em função de possuírem diferentes escalas. Já as colunas categórias, estas foram codificadas da seguinte forma:
+
+:::: {.columns}
+::: {.column width="70%"}
+
+|Coluna|Rótulos|
+|------|-------|
+|Escolaridade| Básico: 0, Graduação: 1, Pós-graudação: 2|
+|Estado civil| Solteiro: 0, Casado: 1, Divorciado: 2, Viúvo: 3|
+
+::: 
+::::
+
+Para o treino do modelo, utilizou-se as colunas: 
+
+> 'Age', 'Education_Level', 'Marital_Status', 'Children', Income', 'Answered_Cmps', 'Recency', 'Total_Spent', 'MntWines', 'MntFruits', 'MntMeatProducts', 'MntFishProducts', 'MntSweetProducts', 'MntGoldProds', 'TotalPurchases'
+
+O conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 colunas.
+
+# Modelagem
+
+A etapa de modelagem se deu via algoritmo K-means, um algoritmo de aprendizado não-supervisionado destinado a tarefas de agrupamento (oy clusterização). Antes de entrar na modelagem observou-se pelas as colunas categóricas e com base nas rendas anuais (coluna numérica), um número de grupos sugestivo para a modelagem:
+
+**Formação:**
+
+ 1. Básica
+ 2. Graduação
+ 3. Pós-graduação
+
+**Estado civil:**
+
+  1. Solteiro
+  2. Casado
+  3. Divorciado
+  4. Viúvo
+
+**Filhos:**
+
+  1. Nenhum
+  2. Um filho
+  3. Dois ou mais filhos
+
+Logo, 3-4 clusters já seria um bom chute inicial (o número foi posteriormente validado pelo método do cotovelo). Quanto ao funcionamento, o algoritmo K-means (Figura 1) funciona da seguinte maneira:
+
+![Figura 1: Funcionamento do algoritmo K-means](assets/kmeans.png){width=70%}
+
+1. É informado um número de clusters inicial, bem como o centro de cada cluster;
+2. A distância de cada ponto versus o centro de cada cluster é calculada. Atribui-se a cada observação o cluster cuja distância em relação ao centro do cluster é menor.
+3. Com as observações rotuladas, recalcula-se os novos centros de cada cluster e as distâncias de cada observação novamente. Ao final dessa etapa, tem-se os clusters atualizados.
+4. Repete-se o processo até que a configuração dos clusters não se altere significativamente.
+
+Conforme mencionado anteriormente:
+
+> O notebook Python completo contendo a etapa de EDA e modelagem pode ser encontrado em [aqui](https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing).
+
+# Resultados
+
+O que mais contribuiu para discriminar os clusters - com base na análise de correlação de cada variável da modelagem com a coluna `Cluster` foi:
+
+:::: {.columns}
+::: {.column width="70%"}
+
+|Coluna|Correlação (poder de discriminação)|
+|------|-----------|
+|Quantidade de filhos| 64%|
+|Total Gasto| 39%|
+|Idade| 32%|
+|Compras| 18%|
+|Campanhas respondidas| 16%|
+|Escolaridade| 13%|
+|Renda| 9%|
+|Estado civil| 9%|
+
+:::
+::::
+
+<br>
+
+Quanto à distribuição, tem-se:
+
+:::: {.columns}
+::: {.column width="20%"}
+
+|Cluster|Clientes|Percentual|
+|------|-----------|---|
+A|583|36%|
+B|460|28%|
+C|386|24%|
+D|206|12%|
+
+:::
+::::
+
+<br>
+
+Abaixo, tem-se um resumo dos clusters, tomando a média como medida de tendência central:
+
+```{python}
+#| echo: false
+# -- Bibliotecas:
+# manipulação de dados
+import pandas as pd
+import numpy as np
+from datetime import datetime
+#import datetime as dt
+
+# visualizaçao de dados
+import matplotlib.pyplot as plt
+import seaborn as sns
+import plotly.io as pio
+import plotly.express as px
+
+#  modelagem:
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.cluster import KMeans
+
+# configurações
+from custom_layout import *
+pio.templates.default = "simple_white"
+pd.options.plotting.backend = 'plotly'
+
+customers = pd.read_csv('segmented_customers.csv')
+customers.groupby('Cluster', as_index=False).mean().style.background_gradient()
+```
+
+Segmentando um pouco por fatores como aspectos demográficos, recência/frequência/valor
+
+> Aspectos demográficos:
+
+```{python}
+#|echo: false
+demographics = [
+    'Age', 'Children', 'Income', 'Marital_Status',
+    'Days_as_Customer', 'Education_Level',
+     'Cluster'
+]
+
+customers[demographics].groupby('Cluster').median()\
+  .style.format(precision=2).background_gradient()
+```
+
+> Recência, frequência e valor:
+
+```{python}
+#|echo: false
+rfm_analysis = [
+    'Recency', 'TotalPurchases', 'Total_Spent', 'NumDealsPurchases',
+     'Cluster'
+]
+
+clusters_rfm = customers[rfm_analysis].groupby('Cluster', as_index=False).median()#\
+  #.style.format(precision=2).background_gradient()
+
+clusters_rfm['Ticket'] = clusters_rfm['Total_Spent'] / clusters_rfm['TotalPurchases']
+clusters_rfm['Percent_DealsPurchase'] = clusters_rfm['NumDealsPurchases'] / clusters_rfm['TotalPurchases'] * 100
+clusters_rfm.style.format(precision=2).background_gradient()
+```
+
+### Idade
+
+```{python}
+#|echo: false
+cluster_alph_order = {'Cluster': ['A', 'B', 'C', 'D']}
+
+fig = px.histogram(
+    customers,
+    facet_col='Cluster',
+    x='Age',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+```
+
+Em resumo:
+
+* Cluster A: em torno de 46 anos
+* Clusters B, C, D: em torno de 60 anos
+
+### Renda anual (USD)
+
+```{python}
+#|echo: false
+cluster_alph_order = {'Cluster': ['A', 'B', 'C', 'D']}
+
+fig = px.box(
+    customers,
+    x='Cluster',
+    y='Income',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+```
+
+Em resumo:
+
+* Cluster A: baixa renda
+* Cluster B: média renda
+* Cluster C: renda média-alta
+* Cluster D: alta renda
+
+Isso interfere no quanto o cliente gasta na empresa:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers, 
+    x='Income', 
+    y='Total_Spent', 
+    color='Cluster', 
+    color_discrete_sequence=['#ff9f1c', '#086375', '#47D45A', '#a4133c'],
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig.update_traces(marker=custom_marker_style)
+fig.show()
+```
+
+> Clientes da base que têm maior renda, tendem a gastar mais. Mas aonde cada cluster gasta?
+
+```{python}
+#|echo: false
+mnt_columns = [
+     'Total_Spent', 'MntWines', 'MntFruits', 'MntMeatProducts',
+     'MntFishProducts', 'MntSweetProducts', 'MntGoldProds',
+     'Cluster'
+]
+
+cuslters_buy_patterns = customers[mnt_columns].groupby('Cluster', as_index=False).median()
+cuslters_buy_patterns['MntWines'] = cuslters_buy_patterns['MntWines'] / cuslters_buy_patterns['Total_Spent'] * 100
+cuslters_buy_patterns['MntFruits'] = cuslters_buy_patterns['MntFruits'] / cuslters_buy_patterns['Total_Spent'] * 100
+cuslters_buy_patterns['MntMeatProducts'] = cuslters_buy_patterns['MntMeatProducts'] / cuslters_buy_patterns['Total_Spent'] * 100
+cuslters_buy_patterns['MntFishProducts'] = cuslters_buy_patterns['MntFishProducts'] / cuslters_buy_patterns['Total_Spent'] * 100
+cuslters_buy_patterns['MntSweetProducts'] = cuslters_buy_patterns['MntSweetProducts'] / cuslters_buy_patterns['Total_Spent'] * 100
+cuslters_buy_patterns['MntGoldProds'] = cuslters_buy_patterns['MntGoldProds'] / cuslters_buy_patterns['Total_Spent'] * 100
+
+cuslters_buy_patterns.style.format(precision=2).background_gradient()
+```
+
+* Cluster A: Gasta em frutas, carnes, peixe, doces e, de certa frma, acaba comprando produtos premium (talvez em ofertas)
+* Cluster B: gasta com vinhos e carnes
+* Cluster C: gasta com vinhos e produtos premium
+* Cluster D: gasta com vinhos, carnes, peixes e doces.
+
+Vejamos isso por meio de visualizações:
+
+> Valor gastos em vinhos:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntWines',
+    size='MntWines',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+> Valor gastos em carnes:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntMeatProducts',
+    size='MntMeatProducts',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+> Valor gastos em peixe:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntFishProducts',
+    size='MntFishProducts',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+> Valor gastos em produtos premium:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntGoldProds',
+    size='MntGoldProds',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+> Valor gastos em doces:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntSweetProducts',
+    size='MntSweetProducts',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+> Valor gastos em frutas:
+
+```{python}
+#|echo: false
+fig = px.scatter(
+    customers,
+    x='Income',
+    y='MntFruits',
+    size='MntFruits',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+``` 
+
+
+### Campanhas de marketing
+
+```{python}
+#|echo: false
+fig = px.histogram(
+    customers,
+    x='Answered_Cmps',
+    facet_col='Cluster',
+    color='Cluster',
+    color_discrete_sequence=color_discrete_sequence,
+    opacity=0.92,
+    category_orders = cluster_alph_order
+)
+fig.update_layout(custom_layout)
+fig = update_facet_axes(fig)
+fig.show()
+```
+
+### Canais de venda
+
+> Compras na loja:
+
+```{python}
+#|echo: false
+fig = px.histogram(
+    customers, 
+    y='Total_Spent', 
+    x='NumStorePurchases', 
+    facet_col='Cluster', 
+    color='Cluster', 
+    color_discrete_sequence=color_discrete_sequence, 
+    category_orders = cluster_alph_order
+)
+fig = update_facet_axes(fig)
+fig.update_layout(custom_layout)
+```
+
+> Compras na online:
+
+```{python}
+#|echo: false
+fig = px.histogram(
+    customers, 
+    y='Total_Spent', 
+    x='NumWebPurchases', 
+    facet_col='Cluster', 
+    color='Cluster', 
+    color_discrete_sequence=color_discrete_sequence, 
+    category_orders = cluster_alph_order
+)
+fig = update_facet_axes(fig)
+fig.update_layout(custom_layout)
+```
+
+* Cluster A costuma comprar mais online
+* Cluster B compra online e na loja
+* Cluster C compra online e na loja, mas o volume de compras na loja é maior
+* Cluster D parece ter um volume de compras maior na loja, emobra também compre online.
+
+> Compras com desconto:
+
+```{python}
+#|echo: false
+fig = px.histogram(
+    customers, 
+    y='Total_Spent', 
+    x='NumDealsPurchases', 
+    facet_col='Cluster', 
+    color='Cluster', 
+    color_discrete_sequence=color_discrete_sequence, 
+    category_orders = cluster_alph_order
+)
+fig = update_facet_axes(fig)
+fig.update_layout(custom_layout)
+```
+
+* O cluster D tem muitos clientes que não compram com desconto
+* Clusters B e C costumam comprar com desconto.
+
+### Personas
+
+* **Cluster A (baixa renda, poucas compras):** cliente com média 46 de anos, de baixa renda, possui ensino superior, entre 0-1 filhos e que valoriza cada centavo gasto. Suas compras são guiadas por promoções e descontos, e ela não é fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa, preferindo informações de fontes confiáveis e próximas, como amigos e redes sociais. Esse tipo de cliente busca sempre o melhor custo-benefício para atender às suas necessidades e de sua família. Apesar disso, ele gasta em todas as categorias (carnes, frutas, doces, vinhos e produtos premium - este último em ofertas).
+
+* **Cluster B (média renda, guiado por promoções e aposentado):**  cliente com média de 60 anos, possui ensino superior, é muito provavelmente aposentado e tem dois filhos adultos. Suas compras são guiadas por promoções e descontos, não sendo fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa e esse tipo de cliente está sempre em busca de custo-benefício para atender às suas necessidades. Seu objetivo é economizar para garantir um futuro financeiro estável e aproveitar a aposentadoria sem preocupações. Costuma gastar em vinhos e carnes.
+
+* **Cluster C (renda média-alta, cliente fiel, guiado pelo mix de preço e valor, aposentado):** cliente com média de 60 anos com renda média-alta, pós-graduado, casado e normalmente possui um único filho. Valoriza produtos premium e é um cliente fiel (grupo há mais tempo como cliente). Esse tipo de cliente compra tanto online quanto em lojas físicas e responde relativamente bem a campanhas de marketing. Além disso, pode-se dizer que é sensível a descontos e busca sempre o melhor valor em vinhos e produtos premium. Suas compras são guiadas pela qualidade e pelo desejo de economizar sem comprometer a excelência dos produtos. Ele busca desfrutar de um estilo de vida sofisticado e tem como objetivo continuar explorando novas experiências gastronômicas.
+
+* **Cluster D (alta renda, guiado por marca e qualidade, aposentado):** cliente com média de 60 ano,  alta renda, com graduação, casado(a) e sem filhos. Se trata de um público de clientes fieis e que responde muito bem a campanhas de marketing. Compra tanto online quanto em lojas físicas e não é sensível a descontos, preferindo produtos de alta qualidade e exclusividade. Gasta consideravelmente em carnes, vinhos e peixes, sendo o tipo de cliente mais rentável. Suas compras são guiadas pela busca por qualidade e experiências premium. Além disso, deseja continuar explorando novas experiências sofisticadas e manter um estilo de vida confortável e farto.
+
+### Recomendações gerais:
+
+* Buscar atrair mais clientes dos clusters B, C e D.
+* Reduzir o percentual de clientes do cluster A.
+* Cluster B: foco em produtos de baixo ticket, de modo a gerar lucro em escala.
+* Clusters C: foco em produtos de qualidade e com bom custo-benefício. Campanhas de marketing com ofertas personalizadas e promoções são bem-vindas.
+* Cluster D: foco em produtos de alta qualdidade e que promovam um ótima experiência ao consumidor. Campanhas de marketing mais voltadas ao branding é interessante. Não oferecer muitas promoções. Esse cliente está disposto a pagar mais pela qualidade.
