@@ -6,7 +6,9 @@ lang: pt-br
 
 # Contexto 
 
-Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados com inúmeras informações sobre clientes contendo apsectos demográficos, padrões de compra e resultados de campanhas de marketing passadas. 
+Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados contendo informações sobre clientes como: (**i**) apsectos demográficos, (**ii**) padrões de compra e (**iii**) resultados de campanhas de marketing passadas. 
+
+Nesse sentido, implementar um algoritmo de agrupamento (clusterização) sobre essa base pode ser de grande valia para o négócio.
 
 ![](assets/clustering-illustration.png){width=90%}
 
@@ -23,7 +25,7 @@ Segementar essa base de clientes de modo a obter grupos com personas bem definid
 Como premissas para o projeto, tem-se:
 
 - A base de clientes é uma amostra representativa da população.
-- A coleta de dados se deu aleatoreamente sem viéses de seleção.
+- A coleta de dados se deu aleatoreamente e sem viéses de seleção.
 - Os dados são de boa qualidade e atualizados.
 
 ## Critérios de sucesso
@@ -67,36 +69,36 @@ Os dados correspondem **2240 linhas** e **28 colunas** referentes a dados dos cl
 | `Country`             | País do cliente (localização)                                        |
 
 
-A base original continha alguns dados ausentes, outliers (valores discrepantes) e colunas categóricas que precisaram ser codificadas (rótulos numéricos). Em resumo, obteve-se os seguintes insights da análise exploratória:
+A base original continha alguns dados ausentes, outliers (valores discrepantes) e colunas categóricas que precisaram ser codificadas (em rótulos numéricos). Em resumo, obteve-se os seguintes insights da análise exploratória:
 
 * Os clientes possuem entre 24-84 anos, com média em torno de 55 anos.
 * Cerca de 89% dos clientes possuem ensino superior.
-* A base conta com estados civis de: solteiro, casado, divorciado e viúvo. Aproximadamente 35% da base vive sem um companheiro.
+* A base conta com estados civis de: solteiro, casado, divorciado e viúvo. Aproximadamente 35% da base vive sem um companheiro (65% é casado).
 * Cerca de 28% da base não tem filhos, enquanto 72% possui um ou mais filhos.
-* Tem-se várias faixas de renda entre os clientes, com mínimo de 1.730 USD, máximo de 154.000 USD e média de 52.200 USD anuais (desconsiderando outliers).
+* Tem-se várias faixas de renda entre os clientes, com mínimo de 1.730 USD, máximo de 154.000 USD, média de 52.200 USD anuais (desconsiderando outliers) e desvio padrão de $\sim$ 20.700 USD.
 * Cerca de 84% dos clientes não responderam nenhuma campanha, enquanto 16% responderam no mínimo 1 campanha.
 
+> O notebook Python completo contendo a etapa de EDA e modelagem pode ser encontrado em [aqui](https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing).
 
 Colunas excluídas da análise:
 
-* `NumWebVisitsMonth`: não necessariamente as visitas convertem em compra, logo foi decidido pelo negócio a exlusão dessa coluna na fase de modelagem. 
+* `NumWebVisitsMonth`: não necessariamente as visitas convertem em compra, logo foi decidido pelo negócio a exclusão dessa coluna na fase de modelagem. 
 * `Complain`: 99% dos clientes não reclamaram, logo, essa coluna não contribuiria muito para a modelagem.
-* `Response`: se refere à compra, mas apenas na última campanha enviada, pouco representativa para a modelagem.
+* `Response`: se refere à compra, mas apenas na última campanha enviada, pouco representativa para o problema em questão.
 
 Colunas modificas/novas colunas:
 
 * `Year_Birth` foi substituída por `Age` (cálculo de datas)
-* `Education` foi substituída por `Education_Level` que divide os clientes quanto a: *(i)* Básico, *(ii)* Graduação e *(iii)* Pós-Graduação.
+* `Education` foi substituída por `Education_Level` que divide os clientes quanto a: *(i)* Ensino Básico, *(ii)* Graduação e *(iii)* Pós-Graduação.
 * `Dt_customer`foi substituída por `Days_as_Customer` (data máxima do dataset - data inicial como cliente)
 * `Kidhome` e `Teenhome` foram unificadas em `Children` (número de filhos totais)
-* Colunas do tipo `AcceptedCmp...` foi derivada em  `AcceptedCmps` (número de campanhas aceitas)
-* Nova coluna: `TotalPurchases` (Total de compras)
+* Colunas do tipo `AcceptedCmp...` foram derivadas em `AcceptedCmps` (número de campanhas aceitas)
+* Nova coluna: `TotalPurchases` (Total de compras, somando todos os canais de venda)
 
-> O notebook Python completo contendo a etapa de EDA e modelagem pode ser encontrado em [aqui](https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing).
 
 ## Preparação dos dados
 
-Nessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram normalizadas em função de possuírem diferentes escalas. Já as colunas categórias, estas foram codificadas da seguinte forma:
+Nessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram padronizadas em função de possuírem diferentes escalas. Já as colunas categóricas, estas foram codificadas da seguinte forma:
 
 :::: {.columns}
 ::: {.column width="70%"}
@@ -117,7 +119,7 @@ O conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 col
 
 # Modelagem
 
-A etapa de modelagem se deu via algoritmo K-means, um algoritmo de aprendizado não-supervisionado destinado a tarefas de agrupamento (oy clusterização). Antes de entrar na modelagem observou-se pelas as colunas categóricas e com base nas rendas anuais (coluna numérica), um número de grupos sugestivo para a modelagem:
+A etapa de modelagem se deu via algoritmo K-means, um algoritmo de aprendizado não-supervisionado destinado a tarefas de agrupamento (ou clusterização). Antes de entrar na modelagem, observou-se pelas colunas categóricas e com base na renda anual (coluna numérica), um número de grupos sugestivo para a modelagem:
 
 **Formação:**
 
@@ -142,8 +144,8 @@ Logo, 3-4 clusters já seria um bom chute inicial (o número foi posteriormente 
 
 ![Figura 1: Funcionamento do algoritmo K-means](assets/kmeans.png){width=70%}
 
-1. É informado um número de clusters inicial, bem como o centro de cada cluster;
-2. A distância de cada ponto versus o centro de cada cluster é calculada. Atribui-se a cada observação o cluster cuja distância em relação ao centro do cluster é menor.
+1. É informado um número de clusters inicial (cujo centro de cada cluster é calculado);
+2. A distância de cada ponto versus o centro de cada cluster é calculada. Dessa forma, atribui-se a cada observação o cluster cuja distância em relação ao seu centro é menor.
 3. Com as observações rotuladas, recalcula-se os novos centros de cada cluster e as distâncias de cada observação novamente. Ao final dessa etapa, tem-se os clusters atualizados.
 4. Repete-se o processo até que a configuração dos clusters não se altere significativamente.
 
@@ -222,7 +224,9 @@ customers = pd.read_csv('segmented_customers.csv')
 customers.groupby('Cluster', as_index=False).mean().style.background_gradient()
 ```
 
-Segmentando um pouco por fatores como aspectos demográficos, recência/frequência/valor
+<br>
+
+Segmentando um pouco por fatores como aspectos demográficos, recência/frequência/valor, tem-se:
 
 > Aspectos demográficos:
 
@@ -255,6 +259,10 @@ clusters_rfm['Percent_DealsPurchase'] = clusters_rfm['NumDealsPurchases'] / clus
 clusters_rfm.style.format(precision=2).background_gradient()
 ```
 
+<br> 
+
+Vejamos tais aspectos por meio de visualizações interativas (você pode dar zoom, filtrar clusters e obter informações ao passar o mouse).
+
 ### Idade
 
 ```{python}
@@ -274,10 +282,8 @@ fig = update_facet_axes(fig)
 fig.show()
 ```
 
-Em resumo:
-
-* Cluster A: em torno de 46 anos
-* Clusters B, C, D: em torno de 60 anos
+* Cluster A: média em torno de 46 anos
+* Clusters B, C, D: média em torno de 60 anos
 
 ### Renda anual (USD)
 
@@ -297,8 +303,6 @@ fig.update_layout(custom_layout)
 fig = update_facet_axes(fig)
 fig.show()
 ```
-
-Em resumo:
 
 * Cluster A: baixa renda
 * Cluster B: média renda
@@ -322,7 +326,9 @@ fig.update_traces(marker=custom_marker_style)
 fig.show()
 ```
 
-> Clientes da base que têm maior renda, tendem a gastar mais. Mas aonde cada cluster gasta?
+Clientes da base que têm maior renda, tendem a gastar mais. Mas aonde cada cluster gasta?
+
+### Padrões de compra por cluster
 
 ```{python}
 #|echo: false
@@ -343,10 +349,10 @@ cuslters_buy_patterns['MntGoldProds'] = cuslters_buy_patterns['MntGoldProds'] / 
 cuslters_buy_patterns.style.format(precision=2).background_gradient()
 ```
 
-* Cluster A: Gasta em frutas, carnes, peixe, doces e, de certa frma, acaba comprando produtos premium (talvez em ofertas)
-* Cluster B: gasta com vinhos e carnes
-* Cluster C: gasta com vinhos e produtos premium
-* Cluster D: gasta com vinhos, carnes, peixes e doces.
+* Cluster A: Gasta mais com frutas, peixes, doces e, de certa forma, acaba comprando produtos premium (talvez em ofertas)
+* Cluster B: gasta mais com vinhos, produtos premium e carnes
+* Cluster C: gasta mais com vinhos e produtos premium
+* Cluster D: gasta mais com vinhos, carnes, peixes e doces.
 
 Vejamos isso por meio de visualizações:
 
@@ -508,7 +514,7 @@ fig = update_facet_axes(fig)
 fig.update_layout(custom_layout)
 ```
 
-> Compras na online:
+> Compras online:
 
 ```{python}
 #|echo: false
@@ -525,9 +531,11 @@ fig = update_facet_axes(fig)
 fig.update_layout(custom_layout)
 ```
 
+<br>
+
 * Cluster A costuma comprar mais online
 * Cluster B compra online e na loja
-* Cluster C compra online e na loja, mas o volume de compras na loja é maior
+* Cluster C compra online e na loja, mas o volume de compras na loja parece ser um pouco maior
 * Cluster D parece ter um volume de compras maior na loja, emobra também compre online.
 
 > Compras com desconto:
@@ -547,18 +555,20 @@ fig = update_facet_axes(fig)
 fig.update_layout(custom_layout)
 ```
 
+<br>
+
 * O cluster D tem muitos clientes que não compram com desconto
 * Clusters B e C costumam comprar com desconto.
 
 ### Personas
 
-* **Cluster A (baixa renda, poucas compras):** cliente com média 46 de anos, de baixa renda, possui ensino superior, entre 0-1 filhos e que valoriza cada centavo gasto. Suas compras são guiadas por promoções e descontos, e ela não é fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa, preferindo informações de fontes confiáveis e próximas, como amigos e redes sociais. Esse tipo de cliente busca sempre o melhor custo-benefício para atender às suas necessidades e de sua família. Apesar disso, ele gasta em todas as categorias (carnes, frutas, doces, vinhos e produtos premium - este último em ofertas).
+* **Cluster A (baixa renda, poucas compras, clientes mais novos):** cliente com média 46 de anos, de baixa renda, possui ensino superior, entre 0-1 filhos e que valoriza cada centavo gasto. Suas compras são guiadas por promoções e descontos, e ela não é fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa, preferindo informações de fontes confiáveis e próximas, como amigos e redes sociais. Esse tipo de cliente busca sempre o melhor custo-benefício para atender às suas necessidades e de sua família. Apesar disso, ele gasta em todas as categorias (carnes, frutas, doces, vinhos e produtos premium - este último em ofertas).
 
-* **Cluster B (média renda, guiado por promoções e aposentado):**  cliente com média de 60 anos, possui ensino superior, é muito provavelmente aposentado e tem dois filhos adultos. Suas compras são guiadas por promoções e descontos, não sendo fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa e esse tipo de cliente está sempre em busca de custo-benefício para atender às suas necessidades. Seu objetivo é economizar para garantir um futuro financeiro estável e aproveitar a aposentadoria sem preocupações. Costuma gastar em vinhos e carnes.
+* **Cluster B (média renda, guiado por promoções):**  cliente com média de 60 anos, possui ensino superior, é muito provavelmente aposentado e tem dois filhos adultos. Suas compras são guiadas por promoções e descontos, não sendo fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa e esse tipo de cliente está sempre em busca de custo-benefício para atender às suas necessidades. Seu objetivo é economizar para garantir um futuro financeiro estável e aproveitar a aposentadoria sem preocupações. Costuma gastar em vinhos e carnes.
 
-* **Cluster C (renda média-alta, cliente fiel, guiado pelo mix de preço e valor, aposentado):** cliente com média de 60 anos com renda média-alta, pós-graduado, casado e normalmente possui um único filho. Valoriza produtos premium e é um cliente fiel (grupo há mais tempo como cliente). Esse tipo de cliente compra tanto online quanto em lojas físicas e responde relativamente bem a campanhas de marketing. Além disso, pode-se dizer que é sensível a descontos e busca sempre o melhor valor em vinhos e produtos premium. Suas compras são guiadas pela qualidade e pelo desejo de economizar sem comprometer a excelência dos produtos. Ele busca desfrutar de um estilo de vida sofisticado e tem como objetivo continuar explorando novas experiências gastronômicas.
+* **Cluster C (renda média-alta, cliente fidelizado, guiado pelo mix de preço e valor):** cliente com média de 60 anos com renda média-alta, pós-graduado, casado e normalmente possui um único filho. Valoriza produtos premium e é um cliente fiel (grupo há mais tempo como cliente). Esse tipo de cliente compra tanto online quanto em lojas físicas e responde relativamente bem a campanhas de marketing. Além disso, pode-se dizer que é sensível a descontos e busca sempre o melhor valor em vinhos e produtos premium. Suas compras são guiadas pela qualidade e pelo desejo de economizar sem comprometer a excelência dos produtos. Ele busca desfrutar de um estilo de vida sofisticado e tem como objetivo continuar explorando novas experiências gastronômicas.
 
-* **Cluster D (alta renda, guiado por marca e qualidade, aposentado):** cliente com média de 60 ano,  alta renda, com graduação, casado(a) e sem filhos. Se trata de um público de clientes fieis e que responde muito bem a campanhas de marketing. Compra tanto online quanto em lojas físicas e não é sensível a descontos, preferindo produtos de alta qualidade e exclusividade. Gasta consideravelmente em carnes, vinhos e peixes, sendo o tipo de cliente mais rentável. Suas compras são guiadas pela busca por qualidade e experiências premium. Além disso, deseja continuar explorando novas experiências sofisticadas e manter um estilo de vida confortável e farto.
+* **Cluster D (alta renda, cleinte fidelizado, guiado por marca e qualidade):** cliente com média de 60 ano,  alta renda, com graduação, casado(a) e sem filhos. Se trata de um público de clientes fieis e que responde muito bem a campanhas de marketing. Compra tanto online quanto em lojas físicas e não é sensível a descontos, preferindo produtos de alta qualidade e exclusividade. Gasta consideravelmente em carnes, vinhos e peixes, sendo o tipo de cliente mais rentável. Suas compras são guiadas pela busca por qualidade e experiências premium. Além disso, deseja continuar explorando novas experiências sofisticadas e manter um estilo de vida confortável e farto.
 
 ### Recomendações gerais:
 
