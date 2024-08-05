@@ -242,7 +242,7 @@ customers[demographics].groupby('Cluster').median()\
   .style.format(precision=2).background_gradient()
 ```
 
-Pela mediana, podemos rapidamente que:
+Pela mediana, podemos notar rapidamente que:
 
 * A idade dos clientes do cluster A é menor os clusters B, C, D.
 * Clusters com 1 filho: A e C. Cluster com 2 filhos: B. Cluster sem filhos: D.
