@@ -273,8 +273,8 @@ Novamente, pela mediana, tem-se que:
 * A recência é similar entre os clusters.
 * Os clusters C e D compram com mais frequência que os clusters A e B.
 * Os quatro perfis de renda implicam em diferentes comportamentos quanto ao total gasto.
-* Os clusters B e C costumam comprar mais com desconto. O clsuter D quase não compra com desconto.
-* Clusters A e B: baixo ticket médio (total gasto/total de compras). Clusters C e D: alto ticket.
+* Os clusters B e C costumam comprar mais com desconto. O cluster D quase não compra com desconto.
+* Clusters A e B: baixo ticket médio (total gasto dividido pelo total de compras). Clusters C e D: alto ticket.
 
 Vejamos tais aspectos por meio de visualizações interativas (você pode dar zoom, filtrar clusters e obter informações ao passar o mouse).
 
@@ -591,8 +591,8 @@ fig.update_layout(custom_layout)
 ### Recomendações gerais
 
 * Buscar atrair mais clientes dos clusters B, C e D.
-* O cluster D é onde se encontram os clientes de maior qualidade. Como fidelizar ainda mais esse público? Quais marcas eles gostam mais?
-* Buscar diminuir a recência, principalmente dos clusters D e C.
+* Os clusters D e C compreendem os clientes de maior qualidade (mais rentáveis, maiores tickets, etc.). Como fidelizar ainda mais esse público? Quais marcas eles gostam mais?
+* Buscar diminuir a recência da base de clientes. Para isso, pode-se fazer uso de experimentações com algum dos clusters.
 * Reduzir o percentual de clientes do cluster A.
 * Cluster B: foco em produtos de baixo ticket, de modo a gerar lucro em escala.
 * Clusters C: foco em produtos de qualidade e com bom custo-benefício. Campanhas de marketing com ofertas personalizadas e promoções são bem-vindas.
