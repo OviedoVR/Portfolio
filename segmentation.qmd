@@ -242,6 +242,16 @@ customers[demographics].groupby('Cluster').median()\
   .style.format(precision=2).background_gradient()
 ```
 
+Pela mediana, podemos rapidamente que:
+
+* A idade dos clientes do cluster A é menor os clusters B, C, D.
+* Clusters com 1 filho: A e C. Cluster com 2 filhos: B. Cluster sem filhos: D.
+* Em todos os clusters, a maioria dos clientes é casada.
+* O cluster C é o cliente mais fidelizado (maior tempo como cliente, 432 dias).
+* Clusters A, B e D: usualmente possuem graduação. Cluster C: pós-graduação.
+* Existem quatro faixas de renda.
+
+
 > Recência, frequência e valor:
 
 ```{python}
@@ -251,15 +261,20 @@ rfm_analysis = [
      'Cluster'
 ]
 
-clusters_rfm = customers[rfm_analysis].groupby('Cluster', as_index=False).median()#\
-  #.style.format(precision=2).background_gradient()
+clusters_rfm = customers[rfm_analysis].groupby('Cluster', as_index=False).median()
 
 clusters_rfm['Ticket'] = clusters_rfm['Total_Spent'] / clusters_rfm['TotalPurchases']
 clusters_rfm['Percent_DealsPurchase'] = clusters_rfm['NumDealsPurchases'] / clusters_rfm['TotalPurchases'] * 100
 clusters_rfm.style.format(precision=2).background_gradient()
 ```
 
-<br> 
+Novamente, pela mediana, tem-se que:
+
+* A recência é similar entre os clusters.
+* Os clusters C e D compram com mais frequência que os clusters A e B.
+* Os quatro perfis de renda implicam em diferentes comportamento quanto ao total gasto.
+* Os clusters B e C costumam comprar mais com desconto. O clsuter D quase não compra com desconto.
+* Clusters A e B: baixo ticket médio (total gasto/total de compras). Clusters C e D: alto ticket.
 
 Vejamos tais aspectos por meio de visualizações interativas (você pode dar zoom, filtrar clusters e obter informações ao passar o mouse).
 
@@ -281,6 +296,8 @@ fig.update_layout(custom_layout)
 fig = update_facet_axes(fig)
 fig.show()
 ```
+
+<br>
 
 * Cluster A: média em torno de 46 anos
 * Clusters B, C, D: média em torno de 60 anos
@@ -495,6 +512,8 @@ fig = update_facet_axes(fig)
 fig.show()
 ```
 
+* Os clusters A e B parecem responder menos a campanhas de marketing.
+
 ### Canais de venda
 
 > Compras na loja:
@@ -533,10 +552,8 @@ fig.update_layout(custom_layout)
 
 <br>
 
-* Cluster A costuma comprar mais online
-* Cluster B compra online e na loja
-* Cluster C compra online e na loja, mas o volume de compras na loja parece ser um pouco maior
-* Cluster D parece ter um volume de compras maior na loja, emobra também compre online.
+* Clusters A e B compram online e na loja.
+* Clusters C e D também compram online e na loja, mas o volume de compras na loja parece ser um pouco maior.
 
 > Compras com desconto:
 
@@ -557,7 +574,8 @@ fig.update_layout(custom_layout)
 
 <br>
 
-* O cluster D tem muitos clientes que não compram com desconto
+* O cluster D tem muitos clientes que não compram com desconto.
+* O cluster C parece ser o mais "guiado" a descontos.
 * Clusters B e C costumam comprar com desconto.
 
 ### Personas
