@@ -4,7 +4,7 @@
     "href": "segmentation.html",
     "title": "Segementação de clientes com Machine Learning",
     "section": "",
-    "text": "Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados com inúmeras informações sobre clientes contendo apsectos demográficos, padrões de compra e resultados de campanhas de marketing passadas.\n\nO método utilizado nesse projeto foi o CRISP-DM e a execução se deu via linguagem de programação Python."
+    "text": "Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de marketing, isto é, enviar campanhas específicas para públicos específicos pensando em um maior retorno sobre o investimento (ROI). Para isso, ela conta com uma base de dados contendo informações sobre clientes como: (i) apsectos demográficos, (ii) padrões de compra e (iii) resultados de campanhas de marketing passadas.\nNesse sentido, implementar um algoritmo de agrupamento (clusterização) sobre essa base pode ser de grande valia para o négócio.\n\nO método utilizado nesse projeto foi o CRISP-DM e a execução se deu via linguagem de programação Python."
   },
   {
     "objectID": "segmentation.html#objetivo",
@@ -18,7 +18,7 @@
     "href": "segmentation.html#premissas",
     "title": "Segementação de clientes com Machine Learning",
     "section": "Premissas",
-    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nA base de clientes é uma amostra representativa da população.\nA coleta de dados se deu aleatoreamente sem viéses de seleção.\nOs dados são de boa qualidade e atualizados."
+    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nA base de clientes é uma amostra representativa da população.\nA coleta de dados se deu aleatoreamente e sem viéses de seleção.\nOs dados são de boa qualidade e atualizados."
   },
   {
     "objectID": "segmentation.html#critérios-de-sucesso",
@@ -32,7 +32,7 @@
     "href": "segmentation.html#preparação-dos-dados",
     "title": "Segementação de clientes com Machine Learning",
     "section": "Preparação dos dados",
-    "text": "Preparação dos dados\nNessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram normalizadas em função de possuírem diferentes escalas. Já as colunas categórias, estas foram codificadas da seguinte forma:\n\n\n\n\n\nColuna\nRótulos\n\n\n\n\nEscolaridade\nBásico: 0, Graduação: 1, Pós-graudação: 2\n\n\nEstado civil\nSolteiro: 0, Casado: 1, Divorciado: 2, Viúvo: 3\n\n\n\n\n\nPara o treino do modelo, utilizou-se as colunas:\n\n‘Age’, ‘Education_Level’, ‘Marital_Status’, ‘Children’, Income’, ‘Answered_Cmps’, ‘Recency’, ‘Total_Spent’, ‘MntWines’, ‘MntFruits’, ‘MntMeatProducts’, ‘MntFishProducts’, ‘MntSweetProducts’, ‘MntGoldProds’, ‘TotalPurchases’\n\nO conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 colunas."
+    "text": "Preparação dos dados\nNessa etapa foram calculadas correlações entre as variávies, colunas numéricas foram padronizadas em função de possuírem diferentes escalas. Já as colunas categóricas, estas foram codificadas da seguinte forma:\n\n\n\n\n\nColuna\nRótulos\n\n\n\n\nEscolaridade\nBásico: 0, Graduação: 1, Pós-graudação: 2\n\n\nEstado civil\nSolteiro: 0, Casado: 1, Divorciado: 2, Viúvo: 3\n\n\n\n\n\nPara o treino do modelo, utilizou-se as colunas:\n\n‘Age’, ‘Education_Level’, ‘Marital_Status’, ‘Children’, Income’, ‘Answered_Cmps’, ‘Recency’, ‘Total_Spent’, ‘MntWines’, ‘MntFruits’, ‘MntMeatProducts’, ‘MntFishProducts’, ‘MntSweetProducts’, ‘MntGoldProds’, ‘TotalPurchases’\n\nO conjunto de dados pós-processamento e limpeza constou em 1635 linhas e 15 colunas."
   },
   {
     "objectID": "index.html",
