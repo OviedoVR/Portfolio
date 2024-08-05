@@ -1,0 +1,57 @@
+---
+title: "Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)"
+author: "Vinícius Oviedo"
+lang: pt-br
+notebook-view:
+  - notebook: eda_modeling.ipynb
+    title: "EDA e modelagem"
+    url: https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing
+---
+
+# Contexto 
+
+Um investidor de imóveis deseja buscar oportunidades nos Estados Unidos (EUA) logo que elas surgem em certa localidade (a entrada é um código postal). Para isso, existem diversas plataformas que anunciam imóveis para compra e venda, como é o caso da Zillow. 
+
+![](assets/clustering-illustration.png){width=90%}
+
+Essa plataforma, portanto, disponibiliza uma série de dados e informações sobre esses imóveis. No entanto, o investidor demanda de uma solução data-driven que o permita:
+
+1. Encontrar oportunidades logo que os imóveis são adicionado na plataforma Zillow. 
+2. Buscar por imóveis em mais de um código postal (e.g., buscar oportunidades em três CEPs específicos).
+3. Aplicar regras de negócio como faixa de preço, número de quartos, garagens, estimativa de aluguel, entre outros atributos.
+4. Traçar cenários onde seja mais vantajoso alugar um imóvel de seu portifólio do que deixar o dinheiro em um título de renda fixa no exterior.
+
+
+Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu via linguagem de programação Python, com coleta de dados realizada via APIs. Os dados são de setembro de 2023 e a solução desenvolvida se trata de um mínimo produto viável (MVP), já que se utilizou uma cota gratuita da API consumida.
+
+# Entendimento do negócio
+
+## Objetivo
+
+Buscar de maneira dinâmica e interativa por oportunidades de imóveis recém incluídos na plataforma Zillow.
+
+## Premissas
+
+Como premissas para o projeto, tem-se:
+
+- Os dados da plataforma são confiáveis e atualizados.
+- Estimativas da plataforma quanto ao preço justo do imível e o preço do aluguel (em caso de comprar para alugar) são representativas.
+- Pensando no item anterior, inferiu-se a qualidade da vizinhança pela nota média das escolas próximas a cada imóvel, bem como sua distância em relação a elas. Ou seja, se o imóvel tem escolas próximas e com uma boa nota, é um indicativo de que o bairro é um bairro bom. Consequentemente, o valor estimado de aluguel está próximo da realidade (red flag validada com corretor local).
+
+
+## Critérios de sucesso
+
+Encontrar oportunidades onde:
+
+* O preço médio da área (em pés quadrados) esteja abaixo ou próximo da média global.
+* O cap rate (indicador de retorno) estja acima ou próximo da média global, 
+* O cap rate seja maior que 7% ao ano.
+
+# Entendimento dos dados
+
+
+
+
+# Meu Dashboard
+
+<iframe width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/cb572375-1215-42ec-bf4d-fa17a1c2a310/page/tfugD" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
