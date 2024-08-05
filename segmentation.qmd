@@ -224,8 +224,6 @@ customers = pd.read_csv('segmented_customers.csv')
 customers.groupby('Cluster', as_index=False).mean().style.background_gradient()
 ```
 
-<br>
-
 Segmentando um pouco por fatores como aspectos demográficos, recência/frequência/valor, tem-se:
 
 > Aspectos demográficos:
