@@ -272,7 +272,7 @@ Novamente, pela mediana, tem-se que:
 
 * A recência é similar entre os clusters.
 * Os clusters C e D compram com mais frequência que os clusters A e B.
-* Os quatro perfis de renda implicam em diferentes comportamento quanto ao total gasto.
+* Os quatro perfis de renda implicam em diferentes comportamentos quanto ao total gasto.
 * Os clusters B e C costumam comprar mais com desconto. O clsuter D quase não compra com desconto.
 * Clusters A e B: baixo ticket médio (total gasto/total de compras). Clusters C e D: alto ticket.
 
