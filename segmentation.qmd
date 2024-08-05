@@ -570,7 +570,7 @@ fig.update_layout(custom_layout)
 
 * **Cluster D (alta renda, cliente fidelizado, guiado por marca e qualidade):** cliente com média de 60 anos, alta renda, normalmente possui graduação, casado(a) e sem filhos. Se trata de um público de clientes fieis e que responde muito bem a campanhas de marketing. Compra tanto online quanto em lojas físicas e não é sensível a descontos, preferindo produtos de alta qualidade e exclusividade. É o tipo de cliente mais rentável na base e suas compras são guiadas pela busca por qualidade e experiências premium. Além disso, infere-se que esse grupo deseja continuar explorando novas experiências sofisticadas e manter um estilo de vida confortável e farto. Gasta consideravelmente em vinhos, carnes, peixes e doces.
 
-### Recomendações gerais:
+### Recomendações gerais
 
 * Buscar atrair mais clientes dos clusters B, C e D.
 * O cluster D é onde se encontram os clientes de maior qualidade. Como fidelizar ainda mais esse público? Quais marcas eles gostam mais?
