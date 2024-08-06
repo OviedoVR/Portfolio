@@ -8,7 +8,7 @@
 
 <meta name="author" content="Vinícius Oviedo">
 
-<title>Portfolio - Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)</title>
+<title>Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -78,11 +107,6 @@ ul.task-list li input[type="checkbox"] {
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Portfolio</span>
-    </a>
-  </div>
             <div id="quarto-search" class="" title="Procurar"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
@@ -91,11 +115,15 @@ ul.task-list li input[type="checkbox"] {
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Portfolio de Análise de Dados</span></a>
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./segmentation.html"> 
 <span class="menu-text">Segmentação de clientes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./realestate.html" aria-current="page"> 
+<span class="menu-text">Oportunidades em Real Estate (Zillow, EUA)</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -121,7 +149,10 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#critérios-de-sucesso" id="toc-critérios-de-sucesso" class="nav-link" data-scroll-target="#critérios-de-sucesso">Critérios de sucesso</a></li>
   </ul></li>
   <li><a href="#entendimento-dos-dados" id="toc-entendimento-dos-dados" class="nav-link" data-scroll-target="#entendimento-dos-dados">Entendimento dos dados</a></li>
-  <li><a href="#meu-dashboard" id="toc-meu-dashboard" class="nav-link" data-scroll-target="#meu-dashboard">Meu Dashboard</a></li>
+  <li><a href="#análisemodelagem" id="toc-análisemodelagem" class="nav-link" data-scroll-target="#análisemodelagem">Análise/Modelagem</a>
+  <ul class="collapse">
+  <li><a href="#validação-e-deploy" id="toc-validação-e-deploy" class="nav-link" data-scroll-target="#validação-e-deploy">Validação e Deploy</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -155,30 +186,39 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="contexto" class="level1">
 <h1>Contexto</h1>
-<p>Um investidor de imóveis deseja buscar oportunidades nos Estados Unidos (EUA) logo que elas surgem em certa localidade (a entrada é um código postal). Para isso, existem diversas plataformas que anunciam imóveis para compra e venda, como é o caso da Zillow.</p>
-<p><img src="assets/clustering-illustration.png" class="img-fluid" style="width:90.0%"></p>
+<p>Um investidor de imóveis deseja buscar oportunidades nos Estados Unidos (EUA) logo que elas surgem em certa localidade (a entrada é um código postal ou uma localidade). Para isso, existem diversas plataformas que anunciam imóveis para compra e venda, como é o caso da Zillow.</p>
+<p><img src="assets/RealEstate-analytics.png" class="img-fluid" style="width:90.0%"></p>
 <p>Essa plataforma, portanto, disponibiliza uma série de dados e informações sobre esses imóveis. No entanto, o investidor demanda de uma solução data-driven que o permita:</p>
 <ol type="1">
-<li>Encontrar oportunidades logo que os imóveis são adicionado na plataforma Zillow.</li>
+<li>Encontrar oportunidades logo que os imóveis são adicionados na plataforma Zillow.</li>
 <li>Buscar por imóveis em mais de um código postal (e.g., buscar oportunidades em três CEPs específicos).</li>
-<li>Aplicar regras de negócio como faixa de preço, número de quartos, garagens, estimativa de aluguel, entre outros atributos.</li>
+<li>Obter os imóveis listados no site, na forma de planilhas ou em um banco de dados.</li>
+<li>Aplicar regras de negócio como faixa de preço, número de quartos, garagens, estimativa de aluguel, entre outros atributos, como filtros fixos durante a busca.</li>
 <li>Traçar cenários onde seja mais vantajoso alugar um imóvel de seu portifólio do que deixar o dinheiro em um título de renda fixa no exterior.</li>
 </ol>
-<p>Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu via linguagem de programação Python, com coleta de dados realizada via APIs. Os dados são de setembro de 2023 e a solução desenvolvida se trata de um mínimo produto viável (MVP), já que se utilizou uma cota gratuita da API consumida.</p>
+<p>Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu via linguagem de programação Python, com coleta de dados realizada via <a href="https://rapidapi.com/apimaker/api/zillow-com1">Zillow API</a>, disponível na <a href="https://rapidapi.com/">RapidApi</a>. Os dados são de setembro de 2023 e a solução desenvolvida se trata de um mínimo produto viável (MVP), já que se utilizou uma cota gratuita da API consumida.</p>
 </section>
 <section id="entendimento-do-negócio" class="level1">
 <h1>Entendimento do negócio</h1>
 <section id="objetivo" class="level2">
 <h2 class="anchored" data-anchor-id="objetivo">Objetivo</h2>
-<p>Buscar de maneira dinâmica e interativa por oportunidades de imóveis recém incluídos na plataforma Zillow.</p>
+<p>Buscar de maneira dinâmica e interativa por oportunidades de imóveis recém incluídos na plataforma Zillow na localidade “Philadelphia, PA”.</p>
 </section>
 <section id="premissas" class="level2">
 <h2 class="anchored" data-anchor-id="premissas">Premissas</h2>
 <p>Como premissas para o projeto, tem-se:</p>
 <ul>
 <li>Os dados da plataforma são confiáveis e atualizados.</li>
-<li>Estimativas da plataforma quanto ao preço justo do imível e o preço do aluguel (em caso de comprar para alugar) são representativas.</li>
-<li>Pensando no item anterior, inferiu-se a qualidade da vizinhança pela nota média das escolas próximas a cada imóvel, bem como sua distância em relação a elas. Ou seja, se o imóvel tem escolas próximas e com uma boa nota, é um indicativo de que o bairro é um bairro bom. Consequentemente, o valor estimado de aluguel está próximo da realidade (red flag validada com corretor local).</li>
+<li>Estimativas da plataforma quanto ao preço justo do imóvel e o preço do aluguel (em caso de comprar para alugar) são representativas.</li>
+<li>Pensando no item anterior, inferiu-se a qualidade da vizinhança pela nota média das escolas próximas a cada imóvel (critério de inclusão: nota maior ou igual a 4). Ou seja, se o imóvel tem escolas próximas com uma boa nota, é um indicativo de que o bairro é um bairro bom. Consequentemente, o valor estimado de aluguel está próximo da realidade (red flag validada com corretor local). Caso contrário, o bairro pode não ser bom em termos de segurança e a estimativa de aluguel informada pela Zillow estará superestimada.</li>
+<li>Como se trata de um MVP, a quantidade de dados é pequena, mas a solução pode ser facilmente escalonada.</li>
+</ul>
+<p>Filtros de busca:</p>
+<ul>
+<li><strong>Localidade:</strong> “Philadelphia, PA”</li>
+<li><strong>Status do imóvel:</strong> à venda</li>
+<li><strong>Dias na plataforma:</strong> até 7 dias</li>
+<li><strong>Nota das escolas próximas:</strong> 4 ou mais</li>
 </ul>
 </section>
 <section id="critérios-de-sucesso" class="level2">
@@ -186,20 +226,136 @@ ul.task-list li input[type="checkbox"] {
 <p>Encontrar oportunidades onde:</p>
 <ul>
 <li>O preço médio da área (em pés quadrados) esteja abaixo ou próximo da média global.</li>
-<li>O cap rate (indicador de retorno) estja acima ou próximo da média global,</li>
-<li>O cap rate seja maior que 7% ao ano.</li>
+<li>O cap rate (indicador de retorno) estja acima ou próximo da média global ou a um valor de referência estabelecido pelo negócio.</li>
+<li>O cap rate seja maior que 7% ao ano (regra de negócio).</li>
 </ul>
 </section>
 </section>
 <section id="entendimento-dos-dados" class="level1">
 <h1>Entendimento dos dados</h1>
+<p>O dataset original constou de 41 linhas e 31 colunas. Algumas padronizações foram necessárias (e.g., áreas em ft² ou acres), cálculo de novas colunas como <strong>Cap Rate</strong> e <strong>razão preço/Zillow estimate</strong> (indica se o preço esta coerente, subestimado ou superestimado).</p>
+<p>Vale ressaltar que o Cap rate é um indicador de retorno muito utilizado no setor imobiliário. Podendo ser utilizado para comparar opções de investimento, ele é tido matematicamente como:</p>
+<p><span class="math display">\[\begin{equation}
+  \textrm{Cap Rate} = \frac{\textrm{Valor anual recebido com alugel}}{\textrm{Preço do imóvel}}
+\end{equation}\]</span></p>
+<p>Após limpeza, o conjunto de dados final consistiu em 32 linhas e 15 colunas:</p>
+<table class="table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 64%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Coluna</th>
+<th>Descrição</th>
+<th>Tipo de dado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>zpid</code></td>
+<td>ID do imóvel no site da Zillow</td>
+<td>string</td>
+</tr>
+<tr class="even">
+<td><code>detailUrl</code></td>
+<td>URL do imóvel</td>
+<td>string</td>
+</tr>
+<tr class="odd">
+<td><code>propertyType</code></td>
+<td>Tipo de propriedade</td>
+<td>string</td>
+</tr>
+<tr class="even">
+<td><code>address</code></td>
+<td>Endereço</td>
+<td>string</td>
+</tr>
+<tr class="odd">
+<td><code>price</code></td>
+<td>Preço em USD</td>
+<td>inteiro</td>
+</tr>
+<tr class="even">
+<td><code>zestimate</code></td>
+<td>Estimativa do preço justo da Zillow (USD)</td>
+<td>float</td>
+</tr>
+<tr class="odd">
+<td><code>rentZestimate</code></td>
+<td>Estimativa do alugel fornecido pela Zillow (USD)</td>
+<td>float</td>
+</tr>
+<tr class="even">
+<td><code>daysOnZillow</code></td>
+<td>Dias na plataforma</td>
+<td>inteiro</td>
+</tr>
+<tr class="odd">
+<td><code>bedrooms</code></td>
+<td>Quartos</td>
+<td>inteiro</td>
+</tr>
+<tr class="even">
+<td><code>lotAreaValue</code></td>
+<td>Área do lote (ft²)</td>
+<td>float</td>
+</tr>
+<tr class="odd">
+<td><code>lotAreaUnit</code></td>
+<td>Unidade do lote (ft² pós-padronização)</td>
+<td>string</td>
+</tr>
+<tr class="even">
+<td><code>bathrooms</code></td>
+<td>Banheiros</td>
+<td>inteiro</td>
+</tr>
+<tr class="odd">
+<td><code>livingArea</code></td>
+<td>Área de referência da propriedade</td>
+<td>float</td>
+</tr>
+<tr class="even">
+<td><code>longitude</code></td>
+<td>Longitude</td>
+<td>float</td>
+</tr>
+<tr class="odd">
+<td><code>latitude</code></td>
+<td>Latitude</td>
+<td>float</td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="meu-dashboard" class="level1">
-<h1>Meu Dashboard</h1>
+<section id="análisemodelagem" class="level1">
+<h1>Análise/Modelagem</h1>
+<p>Com base no conjunto de dados final, pôde-se desenvolver um dashboard em Google Looker Studio. Nele, tem-se:</p>
+<ul>
+<li>A possibilidade de filtrar imóveis por quartos, banheiros, <code>livingArea</code> e faixa de preço</li>
+<li>Big numbers e valores de referência estabelecidos pelo negócio para: Preço, Preço/ft² e Cap Rate</li>
+<li>A segmentação por quadrantes quanto a preço/ft² e cap rate (onde se busca imóveis com preço/ft² menor que a média e um cap rate maior que a média)</li>
+<li>Um mapa built-in onde se pode, inclusive, obter a visão de “street view” sem sair do dashboard</li>
+<li>Uma tabela com detalhes de cada imóvel, contendo o URL da Zillow e opções de ordenação.</li>
+</ul>
+<p>O dashboard pode ser visualizado abaixo ou acessado via Google Looker Studio (<a href="https://lookerstudio.google.com/s/qNZRTp5fzxY">aqui</a>).</p>
 <iframe width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/cb572375-1215-42ec-bf4d-fa17a1c2a310/page/tfugD" frameborder="0" style="border:0" allowfullscreen="" sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
 </iframe>
+<section id="validação-e-deploy" class="level3">
+<h3 class="anchored" data-anchor-id="validação-e-deploy">Validação e Deploy</h3>
+<p>Após validação dos critérios e do dashboard, os dados podem ser atualizados contstantemente e de maneira escalável. Quanto aos custos, a API conta com os seguintes planos:</p>
+<ul>
+<li><strong>Básico:</strong> 0 USD, 45 requisições/mês</li>
+<li><strong>Pro:</strong> 25 USD, 13.000 requisições/mês</li>
+<li><strong>Ultra:</strong> 60 USD, 45.000 requisições/mês</li>
+</ul>
+<p>Além disso, o usuário final pode filtrar os imóveis e exportar o PDF com a seleção em questão.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

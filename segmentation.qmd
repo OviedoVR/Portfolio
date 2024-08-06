@@ -1,5 +1,5 @@
 ---
-title: "Segementação de clientes com Machine Learning"
+title: "Segmentação de clientes com Machine Learning"
 author: "Vinícius Oviedo"
 lang: pt-br
 ---
@@ -595,3 +595,7 @@ fig.update_layout(custom_layout)
 * Cluster B: foco em produtos de baixo ticket, de modo a gerar lucro em escala.
 * Clusters C: foco em produtos de qualidade e com bom custo-benefício. Campanhas de marketing com ofertas personalizadas e promoções são bem-vindas.
 * Cluster D: foco em produtos de alta qualdidade e que promovam um ótima experiência ao consumidor. Campanhas de marketing mais voltadas ao branding são interessantes para esse público. Não oferecer muitas promoções. Ter em mente que esse tipo de cliente está disposto a pagar mais pela qualidade.
+
+# Validação e deploy
+
+Os clusters obtidos podem ser então entregues e discutidos com o negócio (bem como as recomendações). Se facilitar, os resultados podem ser consumidos via um dashboard ou na forma de planilhas - aqui se aplica o que melhor satisfazer a área de negócio. Por exemplo, é interessante possuir a informação do cluster de cada cliente em plataformas de CRM e email marketing.

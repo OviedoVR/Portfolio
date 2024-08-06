@@ -6,9 +6,9 @@ lang: pt-br
 
 Bem-vindo ao meu portfolio de Análise de Dados. Nesta página, você encontrará os seguintes projetos:
 
+- **Segmentação de clientes do setor com Machine Learning**
+- **Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)**
 
-- **Segmentação de clientes do setor alimentício com Machine Learning**
-- Teste A/B (em breve)
-- Precificiação baseada em dados (em breve)
+Você pode acessá-los por meio da guia de navegação no topo da página. 
 
-Desenvolvido com Quarto markdown (mais detalhes em <https://quarto.org/docs/websites>).
+> Desenvolvido com Quarto markdown (mais detalhes em <https://quarto.org/docs/websites>).
