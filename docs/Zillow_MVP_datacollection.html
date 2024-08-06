@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.549">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>zillow_mvp_datacollection</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./segmentation.html"> 
+<span class="menu-text">Segmentação de clientes</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./realestate.html"> 
+<span class="menu-text">Oportunidades em Real Estate (Zillow, EUA)</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+
+
+<div id="cell-0" class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bibliotecas:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> json</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># configuração pandas (visualização de todas as colunas):</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>pd.set_option(<span class="st">'display.max_columns'</span>, <span class="va">None</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># API key</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>rapid_api_key <span class="op">=</span> <span class="st">'eafb9dbb18msh3e4269211fff736p151375jsn4f220230814a'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>EXAMPLE WITH ZIP CODE AND KEYWORDS</strong></p>
+<div id="cell-2" class="cell" data-outputid="0ef1a1da-55cc-4459-b030-72b857439d8d">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://zillow-com1.p.rapidapi.com/propertyExtendedSearch"</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>querystring <span class="op">=</span> {<span class="st">"location"</span>:<span class="st">"Philadelphia, pa"</span>,<span class="st">"status_type"</span>:<span class="st">"ForSale"</span>,<span class="st">"daysOn"</span>:<span class="st">"7"</span>,<span class="st">"schoolsRating"</span>:<span class="st">"4"</span>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>headers <span class="op">=</span> {</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"X-RapidAPI-Key"</span>: rapid_api_key,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"X-RapidAPI-Host"</span>: <span class="st">"zillow-com1.p.rapidapi.com"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>response <span class="op">=</span> requests.get(url, headers<span class="op">=</span>headers, params<span class="op">=</span>querystring)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(response.json())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>{'props': [{'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1901, 'address': '7012 Charles St, Philadelphia, PA 19135', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/950bbb8bb25d7cb7652be4043b2f85c8-p_e.jpg', 'price': 239900, 'detailUrl': '/homedetails/7012-Charles-St-Philadelphia-PA-19135/10510325_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.045715, 'latitude': 40.03344, 'listingStatus': 'FOR_SALE', 'zpid': '10510325', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': None, 'daysOnZillow': '2', 'bathrooms': 2, 'livingArea': 1350, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 5000, 'address': '321 Fanshawe St, Philadelphia, PA 19111', 'variableData': None, 'priceChange': None, 'zestimate': 293500, 'imgSrc': 'https://photos.zillowstatic.com/fp/84335bedc75331e4dd291441c1a9d0fb-p_e.jpg', 'price': 299000, 'detailUrl': '/homedetails/321-Fanshawe-St-Philadelphia-PA-19111/10359691_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.09529, 'latitude': 40.054493, 'listingStatus': 'FOR_SALE', 'zpid': '10359691', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1544, 'daysOnZillow': '4', 'bathrooms': 2, 'livingArea': 1600, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 8816, 'address': '9527 Northeast Ave, Philadelphia, PA 19115', 'variableData': None, 'priceChange': None, 'zestimate': 419500, 'imgSrc': 'https://photos.zillowstatic.com/fp/1b9ec357e0c043e48fd24e29681e9b31-p_e.jpg', 'price': 425000, 'detailUrl': '/homedetails/9527-Northeast-Ave-Philadelphia-PA-19115/10528174_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.04128, 'latitude': 40.090378, 'listingStatus': 'FOR_SALE', 'zpid': '10528174', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2400, 'daysOnZillow': '4', 'bathrooms': 2, 'livingArea': 2082, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1717, 'address': '2013 74th Ave, Philadelphia, PA 19138', 'variableData': None, 'priceChange': None, 'zestimate': 265300, 'imgSrc': 'https://photos.zillowstatic.com/fp/a4be2ae3c4e0bebf3844c0f76ca59495-p_e.jpg', 'price': 269000, 'detailUrl': '/homedetails/2013-74th-Ave-Philadelphia-PA-19138/10219020_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.15097, 'latitude': 40.067673, 'listingStatus': 'FOR_SALE', 'zpid': '10219020', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1999, 'daysOnZillow': '2', 'bathrooms': 2, 'livingArea': 1516, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 0.86776859504132, 'address': '8760 Stenton Ave, Philadelphia, PA 19118', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/b89f1d885c56c435db61d92d40a37c10-p_e.jpg', 'price': 895000, 'detailUrl': '/homedetails/8760-Stenton-Ave-Philadelphia-PA-19118/118349208_zpid/', 'bedrooms': 9, 'contingentListingType': None, 'longitude': -75.20603, 'latitude': 40.08248, 'listingStatus': 'FOR_SALE', 'zpid': '118349208', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': None, 'daysOnZillow': '4', 'bathrooms': 8, 'livingArea': 7119, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'acres', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1410, 'address': '1617 Packer Ave, Philadelphia, PA 19145', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/a2fdbdd51187029ec47c491d78c059b2-p_e.jpg', 'price': 309900, 'detailUrl': '/homedetails/1617-Packer-Ave-Philadelphia-PA-19145/10302751_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.17598, 'latitude': 39.912544, 'listingStatus': 'FOR_SALE', 'zpid': '10302751', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2297, 'daysOnZillow': '4', 'bathrooms': 3, 'livingArea': 1535, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'MULTI_FAMILY', 'lotAreaValue': None, 'address': '9926 Haldeman Ave #72, Philadelphia, PA 19115', 'unit': '# 72', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/a581b521f6efc7434f39acc9cdfb27e3-p_e.jpg', 'price': 299900, 'detailUrl': '/homedetails/9926-Haldeman-Ave-72-Philadelphia-PA-19115/10610712_zpid/', 'bedrooms': 2, 'contingentListingType': None, 'longitude': -75.02212, 'latitude': 40.096527, 'listingStatus': 'FOR_SALE', 'zpid': '10610712', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1982, 'daysOnZillow': '4', 'bathrooms': 1, 'livingArea': 2000, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': None, 'hasImage': True}, {'dateSold': None, 'propertyType': 'MULTI_FAMILY', 'lotAreaValue': 4160, 'address': '288 Greenough St, Philadelphia, PA 19127', 'variableData': {'text': 'On market Nov 1', 'type': 'MARKET_UPDATE'}, 'priceChange': None, 'zestimate': 274700, 'imgSrc': 'https://photos.zillowstatic.com/fp/3f6c5b31d33d61e7f2bdf35ab3e02dc9-p_e.jpg', 'price': 365000, 'detailUrl': '/homedetails/288-Greenough-St-Philadelphia-PA-19127/2123501432_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.22565, 'latitude': 40.03219, 'listingStatus': 'FOR_SALE', 'zpid': '2123501432', 'listingSubType': {'is_comingSoon': True}, 'rentZestimate': 1350, 'daysOnZillow': -1, 'bathrooms': None, 'livingArea': 1440, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 930, 'address': '972 Bridge St, Philadelphia, PA 19124', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/fd81e8f0a19bf81cdaa0cd7878415965-p_e.jpg', 'price': 229000, 'detailUrl': '/homedetails/972-Bridge-St-Philadelphia-PA-19124/10353533_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.09027, 'latitude': 40.031048, 'listingStatus': 'FOR_SALE', 'zpid': '10353533', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': None, 'daysOnZillow': '1', 'bathrooms': 3, 'livingArea': 1540, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 2500, 'address': '365 Fanshawe St, Philadelphia, PA 19111', 'variableData': None, 'priceChange': None, 'zestimate': 269800, 'imgSrc': 'https://photos.zillowstatic.com/fp/b463b15c58e14f4192f48d001e6966cd-p_e.jpg', 'price': 274900, 'detailUrl': '/homedetails/365-Fanshawe-St-Philadelphia-PA-19111/10359699_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.09427, 'latitude': 40.05391, 'listingStatus': 'FOR_SALE', 'zpid': '10359699', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1620, 'daysOnZillow': '3', 'bathrooms': 1, 'livingArea': 1956, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 938, 'address': '56 N Edgewood St, Philadelphia, PA 19139', 'variableData': None, 'priceChange': None, 'zestimate': 226400, 'imgSrc': 'https://photos.zillowstatic.com/fp/75566c33f67838697f3cbfdb9de163a5-p_e.jpg', 'price': 235000, 'detailUrl': '/homedetails/56-N-Edgewood-St-Philadelphia-PA-19139/10341645_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.24131, 'latitude': 39.96332, 'listingStatus': 'FOR_SALE', 'zpid': '10341645', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1452, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1314, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'MULTI_FAMILY', 'lotAreaValue': 2196, 'address': '4321 Greenmount Rd, Philadelphia, PA 19154', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/aa79ca471527ba7a865dbda4bb90b2f3-p_e.jpg', 'price': 325000, 'detailUrl': '/homedetails/4321-Greenmount-Rd-Philadelphia-PA-19154/2068519849_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -74.97031, 'latitude': 40.07878, 'listingStatus': 'FOR_SALE', 'zpid': '2068519849', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2328, 'daysOnZillow': '2', 'bathrooms': 2, 'livingArea': 1760, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1650, 'address': '434 Moyer St, Philadelphia, PA 19125', 'variableData': None, 'priceChange': None, 'zestimate': 347700, 'imgSrc': 'https://photos.zillowstatic.com/fp/d20e3a3fc82ab25b0fbacb335c240606-p_e.jpg', 'price': 350000, 'detailUrl': '/homedetails/434-Moyer-St-Philadelphia-PA-19125/10258100_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.12979, 'latitude': 39.97123, 'listingStatus': 'FOR_SALE', 'zpid': '10258100', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1999, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1935, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 651, 'address': '1304 S Cleveland St, Philadelphia, PA 19146', 'variableData': None, 'priceChange': None, 'zestimate': 454100, 'imgSrc': 'https://photos.zillowstatic.com/fp/83f36ed5f6a1754b580edc4a3762319e-p_e.jpg', 'price': 460000, 'detailUrl': '/homedetails/1304-S-Cleveland-St-Philadelphia-PA-19146/10362075_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.17479, 'latitude': 39.934776, 'listingStatus': 'FOR_SALE', 'zpid': '10362075', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2500, 'daysOnZillow': '3', 'bathrooms': 3, 'livingArea': 1461, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1725, 'address': '6823 Lindbergh Blvd, Philadelphia, PA 19142', 'variableData': None, 'priceChange': None, 'zestimate': 255600, 'imgSrc': 'https://photos.zillowstatic.com/fp/7a1c568120f92a77bbf15f1543169231-p_e.jpg', 'price': 260000, 'detailUrl': '/homedetails/6823-Lindbergh-Blvd-Philadelphia-PA-19142/10413467_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.22833, 'latitude': 39.91315, 'listingStatus': 'FOR_SALE', 'zpid': '10413467', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1450, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1224, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1755, 'address': '7538 Brockton Rd, Philadelphia, PA 19151', 'variableData': None, 'priceChange': None, 'zestimate': 236300, 'imgSrc': 'https://photos.zillowstatic.com/fp/be8c41e598280ff9edabe66a017958fb-p_e.jpg', 'price': 240000, 'detailUrl': '/homedetails/7538-Brockton-Rd-Philadelphia-PA-19151/10346727_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.263084, 'latitude': 39.972015, 'listingStatus': 'FOR_SALE', 'zpid': '10346727', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1814, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1120, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 3855, 'address': '306 W School House Ln, Philadelphia, PA 19144', 'variableData': None, 'priceChange': None, 'zestimate': 375400, 'imgSrc': 'https://photos.zillowstatic.com/fp/e18b7c52ed3e8d5874b7348febba89a8-p_e.jpg', 'price': 385000, 'detailUrl': '/homedetails/306-W-School-House-Ln-Philadelphia-PA-19144/10233694_zpid/', 'bedrooms': 6, 'contingentListingType': None, 'longitude': -75.17816, 'latitude': 40.028618, 'listingStatus': 'FOR_SALE', 'zpid': '10233694', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2695, 'daysOnZillow': '5', 'bathrooms': 3, 'livingArea': 2859, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1656, 'address': '3435 Brighton St, Philadelphia, PA 19149', 'variableData': None, 'priceChange': None, 'zestimate': 282600, 'imgSrc': 'https://photos.zillowstatic.com/fp/444380b09a5c12cd4a387e1d6231d615-p_e.jpg', 'price': 289500, 'detailUrl': '/homedetails/3435-Brighton-St-Philadelphia-PA-19149/10506972_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.046425, 'latitude': 40.034817, 'listingStatus': 'FOR_SALE', 'zpid': '10506972', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1700, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1344, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 4284, 'address': '826 E Dorset St, Philadelphia, PA 19119', 'variableData': None, 'priceChange': None, 'zestimate': 446000, 'imgSrc': 'https://photos.zillowstatic.com/fp/701060dd656d0cf655b96bfa191054d2-p_e.jpg', 'price': 449900, 'detailUrl': '/homedetails/826-E-Dorset-St-Philadelphia-PA-19119/10281738_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.17437, 'latitude': 40.063736, 'listingStatus': 'FOR_SALE', 'zpid': '10281738', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2184, 'daysOnZillow': '4', 'bathrooms': 4, 'livingArea': 1917, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 1890, 'address': '5425 Stewart St, Philadelphia, PA 19131', 'variableData': {'text': '3D Tour', 'type': '3D_HOME'}, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/1de24708ba24c384dc83da88c94930bb-p_e.jpg', 'price': 299000, 'detailUrl': '/homedetails/5425-Stewart-St-Philadelphia-PA-19131/2066334656_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.23123, 'latitude': 39.978626, 'listingStatus': 'FOR_SALE', 'zpid': '2066334656', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1431, 'daysOnZillow': -1, 'bathrooms': 2, 'livingArea': 1520, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1626, 'address': '12638 Knights Pl, Philadelphia, PA 19154', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/a9737c2828928773339c061ee8dadbd9-p_e.jpg', 'price': 319900, 'detailUrl': '/homedetails/12638-Knights-Pl-Philadelphia-PA-19154/10588770_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -74.96468, 'latitude': 40.092823, 'listingStatus': 'FOR_SALE', 'zpid': '10588770', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': None, 'daysOnZillow': '3', 'bathrooms': 2, 'livingArea': 1368, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 1488, 'address': '9226 Academy Rd, Philadelphia, PA 19114', 'variableData': None, 'priceChange': None, 'zestimate': 314100, 'imgSrc': 'https://photos.zillowstatic.com/fp/e7665378bd3a4f2694b1130bd5d72ad3-p_e.jpg', 'price': 319999, 'detailUrl': '/homedetails/9226-Academy-Rd-Philadelphia-PA-19114/10526142_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.00994, 'latitude': 40.060947, 'listingStatus': 'FOR_SALE', 'zpid': '10526142', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2269, 'daysOnZillow': '3', 'bathrooms': 2, 'livingArea': 1488, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 2651, 'address': '1926 Bridge St, Philadelphia, PA 19124', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/9f589e3d8cd4450503423c954654d2bb-p_e.jpg', 'price': 200000, 'detailUrl': '/homedetails/1926-Bridge-St-Philadelphia-PA-19124/10558628_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.07239, 'latitude': 40.01734, 'listingStatus': 'FOR_SALE', 'zpid': '10558628', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1694, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1702, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1450, 'address': '6634 Chew Ave, Philadelphia, PA 19119', 'variableData': None, 'priceChange': None, 'zestimate': 208800, 'imgSrc': 'https://photos.zillowstatic.com/fp/a79436dbd01bc17c36695abfe9d1d31c-p_e.jpg', 'price': 209999, 'detailUrl': '/homedetails/6634-Chew-Ave-Philadelphia-PA-19119/10281069_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.1801, 'latitude': 40.054558, 'listingStatus': 'FOR_SALE', 'zpid': '10281069', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1719, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1108, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1297, 'address': '3523 N 7th St, Philadelphia, PA 19140', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/b74268dc0a1e7d07482c3c154a3daf04-p_e.jpg', 'price': 35000, 'detailUrl': '/homedetails/3523-N-7th-St-Philadelphia-PA-19140/10432241_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.14079, 'latitude': 40.005272, 'listingStatus': 'FOR_SALE', 'zpid': '10432241', 'listingSubType': {'is_forAuction': True}, 'rentZestimate': 1348, 'daysOnZillow': '4', 'bathrooms': 1, 'livingArea': 1120, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 9370, 'address': '222 E Gravers Ln, Philadelphia, PA 19118', 'variableData': None, 'priceChange': None, 'zestimate': 810900, 'imgSrc': 'https://photos.zillowstatic.com/fp/84d7f2a7229bbd3cd2d84211dbf68af9-p_e.jpg', 'price': 795000, 'detailUrl': '/homedetails/222-E-Gravers-Ln-Philadelphia-PA-19118/10212594_zpid/', 'bedrooms': 8, 'contingentListingType': None, 'longitude': -75.202995, 'latitude': 40.076515, 'listingStatus': 'FOR_SALE', 'zpid': '10212594', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 6259, 'daysOnZillow': '7', 'bathrooms': 3, 'livingArea': 4352, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1050, 'address': '843 Anchor St, Philadelphia, PA 19124', 'variableData': None, 'priceChange': None, 'zestimate': 131200, 'imgSrc': 'https://photos.zillowstatic.com/fp/bc6eaf18b8e6af14fe897ac0b28efe57-p_e.jpg', 'price': 175000, 'detailUrl': '/homedetails/843-Anchor-St-Philadelphia-PA-19124/10354748_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.09105, 'latitude': 40.03511, 'listingStatus': 'FOR_SALE', 'zpid': '10354748', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1595, 'daysOnZillow': '3', 'bathrooms': 1, 'livingArea': 956, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 3639, 'address': '3856 Kipling Pl, Philadelphia, PA 19154', 'variableData': None, 'priceChange': None, 'zestimate': 366300, 'imgSrc': 'https://photos.zillowstatic.com/fp/6036b998598d273d3cd1db55b58e6ce2-p_e.jpg', 'price': 369900, 'detailUrl': '/homedetails/3856-Kipling-Pl-Philadelphia-PA-19154/10582371_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -74.98209, 'latitude': 40.073437, 'listingStatus': 'FOR_SALE', 'zpid': '10582371', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2350, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1332, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1040, 'address': '4750 Oakmont St, Philadelphia, PA 19136', 'variableData': None, 'priceChange': 15000, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/15bbfad31af71b2ae040ca554bbc3795-p_e.jpg', 'price': 179900, 'detailUrl': '/homedetails/4750-Oakmont-St-Philadelphia-PA-19136/10572026_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.02961, 'latitude': 40.03156, 'listingStatus': 'FOR_SALE', 'zpid': '10572026', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1749, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1179, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 4715, 'address': '304 W Mount Pleasant Ave, Philadelphia, PA 19119', 'variableData': None, 'priceChange': None, 'zestimate': 469200, 'imgSrc': 'https://photos.zillowstatic.com/fp/05e3bdcc3242ce6852dfb10270d6bd7f-p_e.jpg', 'price': 469900, 'detailUrl': '/homedetails/304-W-Mount-Pleasant-Ave-Philadelphia-PA-19119/10284923_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.19422, 'latitude': 40.053738, 'listingStatus': 'FOR_SALE', 'zpid': '10284923', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2698, 'daysOnZillow': '1', 'bathrooms': 3, 'livingArea': 1835, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 0.29003673094582, 'address': '9212 Crispin St, Philadelphia, PA 19114', 'variableData': None, 'priceChange': None, 'zestimate': 366800, 'imgSrc': 'https://photos.zillowstatic.com/fp/3b536fafac683de85b2549c5fbe8a465-p_e.jpg', 'price': 374900, 'detailUrl': '/homedetails/9212-Crispin-St-Philadelphia-PA-19114/10526236_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.007126, 'latitude': 40.058273, 'listingStatus': 'FOR_SALE', 'zpid': '10526236', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1966, 'daysOnZillow': '3', 'bathrooms': 2, 'livingArea': 1860, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'acres', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 1809, 'address': '4333 Worth St, Philadelphia, PA 19124', 'variableData': None, 'priceChange': None, 'zestimate': 196000, 'imgSrc': 'https://photos.zillowstatic.com/fp/5d6f53eb755904d0cbbff7bde48880af-p_e.jpg', 'price': 199900, 'detailUrl': '/homedetails/4333-Worth-St-Philadelphia-PA-19124/10288221_zpid/', 'bedrooms': 5, 'contingentListingType': None, 'longitude': -75.08221, 'latitude': 40.008255, 'listingStatus': 'FOR_SALE', 'zpid': '10288221', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1700, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1440, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 4536, 'address': '816 E Dorset St, Philadelphia, PA 19119', 'variableData': None, 'priceChange': None, 'zestimate': 569800, 'imgSrc': 'https://photos.zillowstatic.com/fp/634c59706ae6eb6764e6d3323dd9ad50-p_e.jpg', 'price': 574900, 'detailUrl': '/homedetails/816-E-Dorset-St-Philadelphia-PA-19119/10281733_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.17468, 'latitude': 40.06343, 'listingStatus': 'FOR_SALE', 'zpid': '10281733', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1900, 'daysOnZillow': '3', 'bathrooms': 3, 'livingArea': 2867, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1264, 'address': '5745 Stewart St, Philadelphia, PA 19131', 'variableData': None, 'priceChange': None, 'zestimate': 239900, 'imgSrc': 'https://photos.zillowstatic.com/fp/833af043ea60a57c971406d67f1b33b3-p_e.jpg', 'price': 219900, 'detailUrl': '/homedetails/5745-Stewart-St-Philadelphia-PA-19131/10194966_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.236885, 'latitude': 39.97766, 'listingStatus': 'FOR_SALE', 'zpid': '10194966', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1500, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1024, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 930, 'address': '162 N 62nd St, Philadelphia, PA 19139', 'variableData': None, 'priceChange': None, 'zestimate': 149600, 'imgSrc': 'https://photos.zillowstatic.com/fp/c8c781846309629958378e2694d650cc-p_e.jpg', 'price': 155000, 'detailUrl': '/homedetails/162-N-62nd-St-Philadelphia-PA-19139/10342612_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.24431, 'latitude': 39.965427, 'listingStatus': 'FOR_SALE', 'zpid': '10342612', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1300, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1160, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1495, 'address': '221 W Sedgwick St, Philadelphia, PA 19119', 'variableData': {'text': '3D Tour', 'type': '3D_HOME'}, 'priceChange': None, 'zestimate': 331500, 'imgSrc': 'https://photos.zillowstatic.com/fp/8579b263e427854755a963835c2b6e9c-p_e.jpg', 'price': 335000, 'detailUrl': '/homedetails/221-W-Sedgwick-St-Philadelphia-PA-19119/10284644_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.192535, 'latitude': 40.054382, 'listingStatus': 'FOR_SALE', 'zpid': '10284644', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 2149, 'daysOnZillow': -1, 'bathrooms': 3, 'livingArea': 1600, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 0.48018824609734, 'address': '3525 W School House Ln, Philadelphia, PA 19129', 'variableData': None, 'priceChange': None, 'zestimate': 643700, 'imgSrc': 'https://photos.zillowstatic.com/fp/abdaa004db44b41872e919cb96648ed8-p_e.jpg', 'price': 650000, 'detailUrl': '/homedetails/3525-W-School-House-Ln-Philadelphia-PA-19129/10273400_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.19755, 'latitude': 40.016506, 'listingStatus': 'FOR_SALE', 'zpid': '10273400', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 3610, 'daysOnZillow': '4', 'bathrooms': 3, 'livingArea': 2592, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'acres', 'hasImage': True}, {'dateSold': None, 'propertyType': 'SINGLE_FAMILY', 'lotAreaValue': 5542, 'address': '933 Fanshawe St, Philadelphia, PA 19111', 'variableData': None, 'priceChange': None, 'zestimate': None, 'imgSrc': 'https://photos.zillowstatic.com/fp/649c92d94a0915927ee90806de71fe6f-p_e.jpg', 'price': 395000, 'detailUrl': '/homedetails/933-Fanshawe-St-Philadelphia-PA-19111/10493259_zpid/', 'bedrooms': 5, 'contingentListingType': None, 'longitude': -75.083466, 'latitude': 40.04786, 'listingStatus': 'FOR_SALE', 'zpid': '10493259', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1650, 'daysOnZillow': '6', 'bathrooms': 3, 'livingArea': 1828, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 998, 'address': '4232 Vista St, Philadelphia, PA 19136', 'variableData': None, 'priceChange': None, 'zestimate': 272200, 'imgSrc': 'https://photos.zillowstatic.com/fp/4ad6c3b90e0b9c1ac025d8dfe44b1347-p_e.jpg', 'price': 279999, 'detailUrl': '/homedetails/4232-Vista-St-Philadelphia-PA-19136/10419642_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.035545, 'latitude': 40.03645, 'listingStatus': 'FOR_SALE', 'zpid': '10419642', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1485, 'daysOnZillow': '4', 'bathrooms': 2, 'livingArea': 1184, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 1120, 'address': '827 Dickinson St, Philadelphia, PA 19147', 'variableData': {'text': 'Open: Sun. 11am-5pm', 'type': 'OPEN_HOUSE'}, 'priceChange': None, 'zestimate': 655600, 'imgSrc': 'https://photos.zillowstatic.com/fp/6c91aa4c007e1bf58c3d45a866ff9953-p_e.jpg', 'price': 674500, 'detailUrl': '/homedetails/827-Dickinson-St-Philadelphia-PA-19147/10174642_zpid/', 'bedrooms': 4, 'contingentListingType': None, 'longitude': -75.15912, 'latitude': 39.9307, 'listingStatus': 'FOR_SALE', 'zpid': '10174642', 'listingSubType': {'is_FSBA': True, 'is_openHouse': True}, 'rentZestimate': 2850, 'daysOnZillow': -1, 'bathrooms': 3, 'livingArea': 2187, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}, {'dateSold': None, 'propertyType': 'TOWNHOUSE', 'lotAreaValue': 962, 'address': '2823 Chalmers Ave, Philadelphia, PA 19132', 'variableData': None, 'priceChange': None, 'zestimate': 149800, 'imgSrc': 'https://photos.zillowstatic.com/fp/86bc471c0eaa0c9a62b06b820893ac1c-p_e.jpg', 'price': 155000, 'detailUrl': '/homedetails/2823-Chalmers-Ave-Philadelphia-PA-19132/10380603_zpid/', 'bedrooms': 3, 'contingentListingType': None, 'longitude': -75.17728, 'latitude': 39.999107, 'listingStatus': 'FOR_SALE', 'zpid': '10380603', 'listingSubType': {'is_FSBA': True}, 'rentZestimate': 1357, 'daysOnZillow': '1', 'bathrooms': 2, 'livingArea': 1162, 'country': 'USA', 'currency': 'USD', 'lotAreaUnit': 'sqft', 'hasImage': True}], 'resultsPerPage': 41, 'totalPages': 13, 'totalResultCount': 507, 'schools': {}, 'currentPage': 1}</code></pre>
+</div>
+</div>
+<div id="cell-3" class="cell" data-outputid="facac272-60d2-400d-9fe3-f691044d7bcd">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>response.json()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>{'props': [{'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1901,
+   'address': '7012 Charles St, Philadelphia, PA 19135',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/950bbb8bb25d7cb7652be4043b2f85c8-p_e.jpg',
+   'price': 239900,
+   'detailUrl': '/homedetails/7012-Charles-St-Philadelphia-PA-19135/10510325_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.045715,
+   'latitude': 40.03344,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10510325',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': None,
+   'daysOnZillow': '2',
+   'bathrooms': 2,
+   'livingArea': 1350,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 5000,
+   'address': '321 Fanshawe St, Philadelphia, PA 19111',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 293500,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/84335bedc75331e4dd291441c1a9d0fb-p_e.jpg',
+   'price': 299000,
+   'detailUrl': '/homedetails/321-Fanshawe-St-Philadelphia-PA-19111/10359691_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.09529,
+   'latitude': 40.054493,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10359691',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1544,
+   'daysOnZillow': '4',
+   'bathrooms': 2,
+   'livingArea': 1600,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 8816,
+   'address': '9527 Northeast Ave, Philadelphia, PA 19115',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 419500,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/1b9ec357e0c043e48fd24e29681e9b31-p_e.jpg',
+   'price': 425000,
+   'detailUrl': '/homedetails/9527-Northeast-Ave-Philadelphia-PA-19115/10528174_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.04128,
+   'latitude': 40.090378,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10528174',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2400,
+   'daysOnZillow': '4',
+   'bathrooms': 2,
+   'livingArea': 2082,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1717,
+   'address': '2013 74th Ave, Philadelphia, PA 19138',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 265300,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/a4be2ae3c4e0bebf3844c0f76ca59495-p_e.jpg',
+   'price': 269000,
+   'detailUrl': '/homedetails/2013-74th-Ave-Philadelphia-PA-19138/10219020_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.15097,
+   'latitude': 40.067673,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10219020',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1999,
+   'daysOnZillow': '2',
+   'bathrooms': 2,
+   'livingArea': 1516,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 0.86776859504132,
+   'address': '8760 Stenton Ave, Philadelphia, PA 19118',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/b89f1d885c56c435db61d92d40a37c10-p_e.jpg',
+   'price': 895000,
+   'detailUrl': '/homedetails/8760-Stenton-Ave-Philadelphia-PA-19118/118349208_zpid/',
+   'bedrooms': 9,
+   'contingentListingType': None,
+   'longitude': -75.20603,
+   'latitude': 40.08248,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '118349208',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': None,
+   'daysOnZillow': '4',
+   'bathrooms': 8,
+   'livingArea': 7119,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'acres',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1410,
+   'address': '1617 Packer Ave, Philadelphia, PA 19145',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/a2fdbdd51187029ec47c491d78c059b2-p_e.jpg',
+   'price': 309900,
+   'detailUrl': '/homedetails/1617-Packer-Ave-Philadelphia-PA-19145/10302751_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.17598,
+   'latitude': 39.912544,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10302751',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2297,
+   'daysOnZillow': '4',
+   'bathrooms': 3,
+   'livingArea': 1535,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'MULTI_FAMILY',
+   'lotAreaValue': None,
+   'address': '9926 Haldeman Ave #72, Philadelphia, PA 19115',
+   'unit': '# 72',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/a581b521f6efc7434f39acc9cdfb27e3-p_e.jpg',
+   'price': 299900,
+   'detailUrl': '/homedetails/9926-Haldeman-Ave-72-Philadelphia-PA-19115/10610712_zpid/',
+   'bedrooms': 2,
+   'contingentListingType': None,
+   'longitude': -75.02212,
+   'latitude': 40.096527,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10610712',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1982,
+   'daysOnZillow': '4',
+   'bathrooms': 1,
+   'livingArea': 2000,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': None,
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'MULTI_FAMILY',
+   'lotAreaValue': 4160,
+   'address': '288 Greenough St, Philadelphia, PA 19127',
+   'variableData': {'text': 'On market Nov 1', 'type': 'MARKET_UPDATE'},
+   'priceChange': None,
+   'zestimate': 274700,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/3f6c5b31d33d61e7f2bdf35ab3e02dc9-p_e.jpg',
+   'price': 365000,
+   'detailUrl': '/homedetails/288-Greenough-St-Philadelphia-PA-19127/2123501432_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.22565,
+   'latitude': 40.03219,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '2123501432',
+   'listingSubType': {'is_comingSoon': True},
+   'rentZestimate': 1350,
+   'daysOnZillow': -1,
+   'bathrooms': None,
+   'livingArea': 1440,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 930,
+   'address': '972 Bridge St, Philadelphia, PA 19124',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/fd81e8f0a19bf81cdaa0cd7878415965-p_e.jpg',
+   'price': 229000,
+   'detailUrl': '/homedetails/972-Bridge-St-Philadelphia-PA-19124/10353533_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.09027,
+   'latitude': 40.031048,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10353533',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': None,
+   'daysOnZillow': '1',
+   'bathrooms': 3,
+   'livingArea': 1540,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 2500,
+   'address': '365 Fanshawe St, Philadelphia, PA 19111',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 269800,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/b463b15c58e14f4192f48d001e6966cd-p_e.jpg',
+   'price': 274900,
+   'detailUrl': '/homedetails/365-Fanshawe-St-Philadelphia-PA-19111/10359699_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.09427,
+   'latitude': 40.05391,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10359699',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1620,
+   'daysOnZillow': '3',
+   'bathrooms': 1,
+   'livingArea': 1956,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 938,
+   'address': '56 N Edgewood St, Philadelphia, PA 19139',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 226400,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/75566c33f67838697f3cbfdb9de163a5-p_e.jpg',
+   'price': 235000,
+   'detailUrl': '/homedetails/56-N-Edgewood-St-Philadelphia-PA-19139/10341645_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.24131,
+   'latitude': 39.96332,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10341645',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1452,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1314,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'MULTI_FAMILY',
+   'lotAreaValue': 2196,
+   'address': '4321 Greenmount Rd, Philadelphia, PA 19154',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/aa79ca471527ba7a865dbda4bb90b2f3-p_e.jpg',
+   'price': 325000,
+   'detailUrl': '/homedetails/4321-Greenmount-Rd-Philadelphia-PA-19154/2068519849_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -74.97031,
+   'latitude': 40.07878,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '2068519849',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2328,
+   'daysOnZillow': '2',
+   'bathrooms': 2,
+   'livingArea': 1760,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1650,
+   'address': '434 Moyer St, Philadelphia, PA 19125',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 347700,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/d20e3a3fc82ab25b0fbacb335c240606-p_e.jpg',
+   'price': 350000,
+   'detailUrl': '/homedetails/434-Moyer-St-Philadelphia-PA-19125/10258100_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.12979,
+   'latitude': 39.97123,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10258100',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1999,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1935,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 651,
+   'address': '1304 S Cleveland St, Philadelphia, PA 19146',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 454100,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/83f36ed5f6a1754b580edc4a3762319e-p_e.jpg',
+   'price': 460000,
+   'detailUrl': '/homedetails/1304-S-Cleveland-St-Philadelphia-PA-19146/10362075_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.17479,
+   'latitude': 39.934776,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10362075',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2500,
+   'daysOnZillow': '3',
+   'bathrooms': 3,
+   'livingArea': 1461,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1725,
+   'address': '6823 Lindbergh Blvd, Philadelphia, PA 19142',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 255600,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/7a1c568120f92a77bbf15f1543169231-p_e.jpg',
+   'price': 260000,
+   'detailUrl': '/homedetails/6823-Lindbergh-Blvd-Philadelphia-PA-19142/10413467_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.22833,
+   'latitude': 39.91315,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10413467',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1450,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1224,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1755,
+   'address': '7538 Brockton Rd, Philadelphia, PA 19151',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 236300,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/be8c41e598280ff9edabe66a017958fb-p_e.jpg',
+   'price': 240000,
+   'detailUrl': '/homedetails/7538-Brockton-Rd-Philadelphia-PA-19151/10346727_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.263084,
+   'latitude': 39.972015,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10346727',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1814,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1120,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 3855,
+   'address': '306 W School House Ln, Philadelphia, PA 19144',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 375400,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/e18b7c52ed3e8d5874b7348febba89a8-p_e.jpg',
+   'price': 385000,
+   'detailUrl': '/homedetails/306-W-School-House-Ln-Philadelphia-PA-19144/10233694_zpid/',
+   'bedrooms': 6,
+   'contingentListingType': None,
+   'longitude': -75.17816,
+   'latitude': 40.028618,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10233694',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2695,
+   'daysOnZillow': '5',
+   'bathrooms': 3,
+   'livingArea': 2859,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1656,
+   'address': '3435 Brighton St, Philadelphia, PA 19149',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 282600,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/444380b09a5c12cd4a387e1d6231d615-p_e.jpg',
+   'price': 289500,
+   'detailUrl': '/homedetails/3435-Brighton-St-Philadelphia-PA-19149/10506972_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.046425,
+   'latitude': 40.034817,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10506972',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1700,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1344,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 4284,
+   'address': '826 E Dorset St, Philadelphia, PA 19119',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 446000,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/701060dd656d0cf655b96bfa191054d2-p_e.jpg',
+   'price': 449900,
+   'detailUrl': '/homedetails/826-E-Dorset-St-Philadelphia-PA-19119/10281738_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.17437,
+   'latitude': 40.063736,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10281738',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2184,
+   'daysOnZillow': '4',
+   'bathrooms': 4,
+   'livingArea': 1917,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 1890,
+   'address': '5425 Stewart St, Philadelphia, PA 19131',
+   'variableData': {'text': '3D Tour', 'type': '3D_HOME'},
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/1de24708ba24c384dc83da88c94930bb-p_e.jpg',
+   'price': 299000,
+   'detailUrl': '/homedetails/5425-Stewart-St-Philadelphia-PA-19131/2066334656_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.23123,
+   'latitude': 39.978626,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '2066334656',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1431,
+   'daysOnZillow': -1,
+   'bathrooms': 2,
+   'livingArea': 1520,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1626,
+   'address': '12638 Knights Pl, Philadelphia, PA 19154',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/a9737c2828928773339c061ee8dadbd9-p_e.jpg',
+   'price': 319900,
+   'detailUrl': '/homedetails/12638-Knights-Pl-Philadelphia-PA-19154/10588770_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -74.96468,
+   'latitude': 40.092823,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10588770',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': None,
+   'daysOnZillow': '3',
+   'bathrooms': 2,
+   'livingArea': 1368,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 1488,
+   'address': '9226 Academy Rd, Philadelphia, PA 19114',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 314100,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/e7665378bd3a4f2694b1130bd5d72ad3-p_e.jpg',
+   'price': 319999,
+   'detailUrl': '/homedetails/9226-Academy-Rd-Philadelphia-PA-19114/10526142_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.00994,
+   'latitude': 40.060947,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10526142',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2269,
+   'daysOnZillow': '3',
+   'bathrooms': 2,
+   'livingArea': 1488,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 2651,
+   'address': '1926 Bridge St, Philadelphia, PA 19124',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/9f589e3d8cd4450503423c954654d2bb-p_e.jpg',
+   'price': 200000,
+   'detailUrl': '/homedetails/1926-Bridge-St-Philadelphia-PA-19124/10558628_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.07239,
+   'latitude': 40.01734,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10558628',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1694,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1702,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1450,
+   'address': '6634 Chew Ave, Philadelphia, PA 19119',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 208800,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/a79436dbd01bc17c36695abfe9d1d31c-p_e.jpg',
+   'price': 209999,
+   'detailUrl': '/homedetails/6634-Chew-Ave-Philadelphia-PA-19119/10281069_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.1801,
+   'latitude': 40.054558,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10281069',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1719,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1108,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1297,
+   'address': '3523 N 7th St, Philadelphia, PA 19140',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/b74268dc0a1e7d07482c3c154a3daf04-p_e.jpg',
+   'price': 35000,
+   'detailUrl': '/homedetails/3523-N-7th-St-Philadelphia-PA-19140/10432241_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.14079,
+   'latitude': 40.005272,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10432241',
+   'listingSubType': {'is_forAuction': True},
+   'rentZestimate': 1348,
+   'daysOnZillow': '4',
+   'bathrooms': 1,
+   'livingArea': 1120,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 9370,
+   'address': '222 E Gravers Ln, Philadelphia, PA 19118',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 810900,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/84d7f2a7229bbd3cd2d84211dbf68af9-p_e.jpg',
+   'price': 795000,
+   'detailUrl': '/homedetails/222-E-Gravers-Ln-Philadelphia-PA-19118/10212594_zpid/',
+   'bedrooms': 8,
+   'contingentListingType': None,
+   'longitude': -75.202995,
+   'latitude': 40.076515,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10212594',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 6259,
+   'daysOnZillow': '7',
+   'bathrooms': 3,
+   'livingArea': 4352,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1050,
+   'address': '843 Anchor St, Philadelphia, PA 19124',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 131200,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/bc6eaf18b8e6af14fe897ac0b28efe57-p_e.jpg',
+   'price': 175000,
+   'detailUrl': '/homedetails/843-Anchor-St-Philadelphia-PA-19124/10354748_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.09105,
+   'latitude': 40.03511,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10354748',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1595,
+   'daysOnZillow': '3',
+   'bathrooms': 1,
+   'livingArea': 956,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 3639,
+   'address': '3856 Kipling Pl, Philadelphia, PA 19154',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 366300,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/6036b998598d273d3cd1db55b58e6ce2-p_e.jpg',
+   'price': 369900,
+   'detailUrl': '/homedetails/3856-Kipling-Pl-Philadelphia-PA-19154/10582371_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -74.98209,
+   'latitude': 40.073437,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10582371',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2350,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1332,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1040,
+   'address': '4750 Oakmont St, Philadelphia, PA 19136',
+   'variableData': None,
+   'priceChange': 15000,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/15bbfad31af71b2ae040ca554bbc3795-p_e.jpg',
+   'price': 179900,
+   'detailUrl': '/homedetails/4750-Oakmont-St-Philadelphia-PA-19136/10572026_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.02961,
+   'latitude': 40.03156,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10572026',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1749,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1179,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 4715,
+   'address': '304 W Mount Pleasant Ave, Philadelphia, PA 19119',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 469200,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/05e3bdcc3242ce6852dfb10270d6bd7f-p_e.jpg',
+   'price': 469900,
+   'detailUrl': '/homedetails/304-W-Mount-Pleasant-Ave-Philadelphia-PA-19119/10284923_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.19422,
+   'latitude': 40.053738,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10284923',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2698,
+   'daysOnZillow': '1',
+   'bathrooms': 3,
+   'livingArea': 1835,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 0.29003673094582,
+   'address': '9212 Crispin St, Philadelphia, PA 19114',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 366800,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/3b536fafac683de85b2549c5fbe8a465-p_e.jpg',
+   'price': 374900,
+   'detailUrl': '/homedetails/9212-Crispin-St-Philadelphia-PA-19114/10526236_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.007126,
+   'latitude': 40.058273,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10526236',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1966,
+   'daysOnZillow': '3',
+   'bathrooms': 2,
+   'livingArea': 1860,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'acres',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 1809,
+   'address': '4333 Worth St, Philadelphia, PA 19124',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 196000,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/5d6f53eb755904d0cbbff7bde48880af-p_e.jpg',
+   'price': 199900,
+   'detailUrl': '/homedetails/4333-Worth-St-Philadelphia-PA-19124/10288221_zpid/',
+   'bedrooms': 5,
+   'contingentListingType': None,
+   'longitude': -75.08221,
+   'latitude': 40.008255,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10288221',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1700,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1440,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 4536,
+   'address': '816 E Dorset St, Philadelphia, PA 19119',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 569800,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/634c59706ae6eb6764e6d3323dd9ad50-p_e.jpg',
+   'price': 574900,
+   'detailUrl': '/homedetails/816-E-Dorset-St-Philadelphia-PA-19119/10281733_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.17468,
+   'latitude': 40.06343,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10281733',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1900,
+   'daysOnZillow': '3',
+   'bathrooms': 3,
+   'livingArea': 2867,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1264,
+   'address': '5745 Stewart St, Philadelphia, PA 19131',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 239900,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/833af043ea60a57c971406d67f1b33b3-p_e.jpg',
+   'price': 219900,
+   'detailUrl': '/homedetails/5745-Stewart-St-Philadelphia-PA-19131/10194966_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.236885,
+   'latitude': 39.97766,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10194966',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1500,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1024,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 930,
+   'address': '162 N 62nd St, Philadelphia, PA 19139',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 149600,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/c8c781846309629958378e2694d650cc-p_e.jpg',
+   'price': 155000,
+   'detailUrl': '/homedetails/162-N-62nd-St-Philadelphia-PA-19139/10342612_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.24431,
+   'latitude': 39.965427,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10342612',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1300,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1160,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1495,
+   'address': '221 W Sedgwick St, Philadelphia, PA 19119',
+   'variableData': {'text': '3D Tour', 'type': '3D_HOME'},
+   'priceChange': None,
+   'zestimate': 331500,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/8579b263e427854755a963835c2b6e9c-p_e.jpg',
+   'price': 335000,
+   'detailUrl': '/homedetails/221-W-Sedgwick-St-Philadelphia-PA-19119/10284644_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.192535,
+   'latitude': 40.054382,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10284644',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 2149,
+   'daysOnZillow': -1,
+   'bathrooms': 3,
+   'livingArea': 1600,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 0.48018824609734,
+   'address': '3525 W School House Ln, Philadelphia, PA 19129',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 643700,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/abdaa004db44b41872e919cb96648ed8-p_e.jpg',
+   'price': 650000,
+   'detailUrl': '/homedetails/3525-W-School-House-Ln-Philadelphia-PA-19129/10273400_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.19755,
+   'latitude': 40.016506,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10273400',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 3610,
+   'daysOnZillow': '4',
+   'bathrooms': 3,
+   'livingArea': 2592,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'acres',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'SINGLE_FAMILY',
+   'lotAreaValue': 5542,
+   'address': '933 Fanshawe St, Philadelphia, PA 19111',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': None,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/649c92d94a0915927ee90806de71fe6f-p_e.jpg',
+   'price': 395000,
+   'detailUrl': '/homedetails/933-Fanshawe-St-Philadelphia-PA-19111/10493259_zpid/',
+   'bedrooms': 5,
+   'contingentListingType': None,
+   'longitude': -75.083466,
+   'latitude': 40.04786,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10493259',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1650,
+   'daysOnZillow': '6',
+   'bathrooms': 3,
+   'livingArea': 1828,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 998,
+   'address': '4232 Vista St, Philadelphia, PA 19136',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 272200,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/4ad6c3b90e0b9c1ac025d8dfe44b1347-p_e.jpg',
+   'price': 279999,
+   'detailUrl': '/homedetails/4232-Vista-St-Philadelphia-PA-19136/10419642_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.035545,
+   'latitude': 40.03645,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10419642',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1485,
+   'daysOnZillow': '4',
+   'bathrooms': 2,
+   'livingArea': 1184,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 1120,
+   'address': '827 Dickinson St, Philadelphia, PA 19147',
+   'variableData': {'text': 'Open: Sun. 11am-5pm', 'type': 'OPEN_HOUSE'},
+   'priceChange': None,
+   'zestimate': 655600,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/6c91aa4c007e1bf58c3d45a866ff9953-p_e.jpg',
+   'price': 674500,
+   'detailUrl': '/homedetails/827-Dickinson-St-Philadelphia-PA-19147/10174642_zpid/',
+   'bedrooms': 4,
+   'contingentListingType': None,
+   'longitude': -75.15912,
+   'latitude': 39.9307,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10174642',
+   'listingSubType': {'is_FSBA': True, 'is_openHouse': True},
+   'rentZestimate': 2850,
+   'daysOnZillow': -1,
+   'bathrooms': 3,
+   'livingArea': 2187,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True},
+  {'dateSold': None,
+   'propertyType': 'TOWNHOUSE',
+   'lotAreaValue': 962,
+   'address': '2823 Chalmers Ave, Philadelphia, PA 19132',
+   'variableData': None,
+   'priceChange': None,
+   'zestimate': 149800,
+   'imgSrc': 'https://photos.zillowstatic.com/fp/86bc471c0eaa0c9a62b06b820893ac1c-p_e.jpg',
+   'price': 155000,
+   'detailUrl': '/homedetails/2823-Chalmers-Ave-Philadelphia-PA-19132/10380603_zpid/',
+   'bedrooms': 3,
+   'contingentListingType': None,
+   'longitude': -75.17728,
+   'latitude': 39.999107,
+   'listingStatus': 'FOR_SALE',
+   'zpid': '10380603',
+   'listingSubType': {'is_FSBA': True},
+   'rentZestimate': 1357,
+   'daysOnZillow': '1',
+   'bathrooms': 2,
+   'livingArea': 1162,
+   'country': 'USA',
+   'currency': 'USD',
+   'lotAreaUnit': 'sqft',
+   'hasImage': True}],
+ 'resultsPerPage': 41,
+ 'totalPages': 13,
+ 'totalResultCount': 507,
+ 'schools': {},
+ 'currentPage': 1}</code></pre>
+</div>
+</div>
+<div id="cell-4" class="cell" data-outputid="d6eaff1a-2c74-4be2-8c9e-3ad88066c8ba">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>zillow_listings <span class="op">=</span> pd.json_normalize(data<span class="op">=</span>response.json()[<span class="st">'props'</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>zillow_listings.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+
+  <div id="df-4dd2eeb5-f574-47e3-82f6-6e6333989586" class="colab-df-container">
+    <div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">dateSold</th>
+<th data-quarto-table-cell-role="th">propertyType</th>
+<th data-quarto-table-cell-role="th">lotAreaValue</th>
+<th data-quarto-table-cell-role="th">address</th>
+<th data-quarto-table-cell-role="th">variableData</th>
+<th data-quarto-table-cell-role="th">priceChange</th>
+<th data-quarto-table-cell-role="th">zestimate</th>
+<th data-quarto-table-cell-role="th">imgSrc</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">detailUrl</th>
+<th data-quarto-table-cell-role="th">bedrooms</th>
+<th data-quarto-table-cell-role="th">contingentListingType</th>
+<th data-quarto-table-cell-role="th">longitude</th>
+<th data-quarto-table-cell-role="th">latitude</th>
+<th data-quarto-table-cell-role="th">listingStatus</th>
+<th data-quarto-table-cell-role="th">zpid</th>
+<th data-quarto-table-cell-role="th">rentZestimate</th>
+<th data-quarto-table-cell-role="th">daysOnZillow</th>
+<th data-quarto-table-cell-role="th">bathrooms</th>
+<th data-quarto-table-cell-role="th">livingArea</th>
+<th data-quarto-table-cell-role="th">country</th>
+<th data-quarto-table-cell-role="th">currency</th>
+<th data-quarto-table-cell-role="th">lotAreaUnit</th>
+<th data-quarto-table-cell-role="th">hasImage</th>
+<th data-quarto-table-cell-role="th">listingSubType.is_FSBA</th>
+<th data-quarto-table-cell-role="th">unit</th>
+<th data-quarto-table-cell-role="th">variableData.text</th>
+<th data-quarto-table-cell-role="th">variableData.type</th>
+<th data-quarto-table-cell-role="th">listingSubType.is_comingSoon</th>
+<th data-quarto-table-cell-role="th">listingSubType.is_forAuction</th>
+<th data-quarto-table-cell-role="th">listingSubType.is_openHouse</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>None</td>
+<td>TOWNHOUSE</td>
+<td>1901.000000</td>
+<td>7012 Charles St, Philadelphia, PA 19135</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>https://photos.zillowstatic.com/fp/950bbb8bb25...</td>
+<td>239900</td>
+<td>/homedetails/7012-Charles-St-Philadelphia-PA-1...</td>
+<td>3</td>
+<td>None</td>
+<td>-75.045715</td>
+<td>40.033440</td>
+<td>FOR_SALE</td>
+<td>10510325</td>
+<td>NaN</td>
+<td>2</td>
+<td>2.0</td>
+<td>1350</td>
+<td>USA</td>
+<td>USD</td>
+<td>sqft</td>
+<td>True</td>
+<td>True</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>None</td>
+<td>SINGLE_FAMILY</td>
+<td>5000.000000</td>
+<td>321 Fanshawe St, Philadelphia, PA 19111</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>293500.0</td>
+<td>https://photos.zillowstatic.com/fp/84335bedc75...</td>
+<td>299000</td>
+<td>/homedetails/321-Fanshawe-St-Philadelphia-PA-1...</td>
+<td>3</td>
+<td>None</td>
+<td>-75.095290</td>
+<td>40.054493</td>
+<td>FOR_SALE</td>
+<td>10359691</td>
+<td>1544.0</td>
+<td>4</td>
+<td>2.0</td>
+<td>1600</td>
+<td>USA</td>
+<td>USD</td>
+<td>sqft</td>
+<td>True</td>
+<td>True</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>None</td>
+<td>SINGLE_FAMILY</td>
+<td>8816.000000</td>
+<td>9527 Northeast Ave, Philadelphia, PA 19115</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>419500.0</td>
+<td>https://photos.zillowstatic.com/fp/1b9ec357e0c...</td>
+<td>425000</td>
+<td>/homedetails/9527-Northeast-Ave-Philadelphia-P...</td>
+<td>3</td>
+<td>None</td>
+<td>-75.041280</td>
+<td>40.090378</td>
+<td>FOR_SALE</td>
+<td>10528174</td>
+<td>2400.0</td>
+<td>4</td>
+<td>2.0</td>
+<td>2082</td>
+<td>USA</td>
+<td>USD</td>
+<td>sqft</td>
+<td>True</td>
+<td>True</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>None</td>
+<td>TOWNHOUSE</td>
+<td>1717.000000</td>
+<td>2013 74th Ave, Philadelphia, PA 19138</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>265300.0</td>
+<td>https://photos.zillowstatic.com/fp/a4be2ae3c4e...</td>
+<td>269000</td>
+<td>/homedetails/2013-74th-Ave-Philadelphia-PA-191...</td>
+<td>4</td>
+<td>None</td>
+<td>-75.150970</td>
+<td>40.067673</td>
+<td>FOR_SALE</td>
+<td>10219020</td>
+<td>1999.0</td>
+<td>2</td>
+<td>2.0</td>
+<td>1516</td>
+<td>USA</td>
+<td>USD</td>
+<td>sqft</td>
+<td>True</td>
+<td>True</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>None</td>
+<td>SINGLE_FAMILY</td>
+<td>0.867769</td>
+<td>8760 Stenton Ave, Philadelphia, PA 19118</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>https://photos.zillowstatic.com/fp/b89f1d885c5...</td>
+<td>895000</td>
+<td>/homedetails/8760-Stenton-Ave-Philadelphia-PA-...</td>
+<td>9</td>
+<td>None</td>
+<td>-75.206030</td>
+<td>40.082480</td>
+<td>FOR_SALE</td>
+<td>118349208</td>
+<td>NaN</td>
+<td>4</td>
+<td>8.0</td>
+<td>7119</td>
+<td>USA</td>
+<td>USD</td>
+<td>acres</td>
+<td>True</td>
+<td>True</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-4dd2eeb5-f574-47e3-82f6-6e6333989586')" title="Convert this dataframe to an interactive table." style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-4dd2eeb5-f574-47e3-82f6-6e6333989586 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-4dd2eeb5-f574-47e3-82f6-6e6333989586');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+<div id="df-931a8648-c62e-4ed9-ab2b-aa38db774996">
+  <button class="colab-df-quickchart" onclick="quickchart('df-931a8648-c62e-4ed9-ab2b-aa38db774996')" title="Suggest charts." style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
+    </g>
+</svg>
+  </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+  <script>
+    async function quickchart(key) {
+      const quickchartButtonEl =
+        document.querySelector('#' + key + ' button');
+      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+      quickchartButtonEl.classList.add('colab-df-spinner');
+      try {
+        const charts = await google.colab.kernel.invokeFunction(
+            'suggestCharts', [key], {});
+      } catch (error) {
+        console.error('Error during call to suggestCharts:', error);
+      }
+      quickchartButtonEl.classList.remove('colab-df-spinner');
+      quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+    }
+    (() => {
+      let quickchartButtonEl =
+        document.querySelector('#df-931a8648-c62e-4ed9-ab2b-aa38db774996 button');
+      quickchartButtonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+    })();
+  </script>
+</div>
+    </div>
+  </div>
+</div>
+</div>
+<div id="cell-5" class="cell" data-outputid="29dfb1c7-05fc-4d84-bb99-9cde3a65e724">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>zillow_listings.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="5">
+<pre><code>(41, 31)</code></pre>
+</div>
+</div>
+<div id="cell-6" class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>zillow_listings.to_excel(<span class="st">'Listings_Philadelphia_7d.xlsx'</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-7" class="cell" data-outputid="5c114526-c43c-41e2-e39a-36ef907f4b53">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>zillow_listings.daysOnZillow.unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>array(['2', '4', -1, '1', '3', '5', '7', '6'], dtype=object)</code></pre>
+</div>
+</div>
+<div id="cell-8" class="cell" data-outputid="af8048b0-b8c2-4dc9-bad8-13c6dab73e46">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>zillow_listings.describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+
+  <div id="df-f0928469-141c-49f6-ad7a-e3dcf20d6390" class="colab-df-container">
+    <div>
+
+
+<table class="dataframe table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">lotAreaValue</th>
+<th data-quarto-table-cell-role="th">variableData</th>
+<th data-quarto-table-cell-role="th">priceChange</th>
+<th data-quarto-table-cell-role="th">zestimate</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">bedrooms</th>
+<th data-quarto-table-cell-role="th">longitude</th>
+<th data-quarto-table-cell-role="th">latitude</th>
+<th data-quarto-table-cell-role="th">rentZestimate</th>
+<th data-quarto-table-cell-role="th">bathrooms</th>
+<th data-quarto-table-cell-role="th">livingArea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">count</td>
+<td>40.000000</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>29.000000</td>
+<td>41.000000</td>
+<td>41.000000</td>
+<td>41.000000</td>
+<td>41.000000</td>
+<td>37.000000</td>
+<td>40.000000</td>
+<td>41.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">mean</td>
+<td>2350.440950</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>345596.551724</td>
+<td>341187.731707</td>
+<td>3.658537</td>
+<td>-75.127901</td>
+<td>40.025685</td>
+<td>2051.162162</td>
+<td>2.375000</td>
+<td>1803.317073</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">std</td>
+<td>2104.341390</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>162108.857788</td>
+<td>172745.058615</td>
+<td>1.334349</td>
+<td>0.085718</td>
+<td>0.049700</td>
+<td>873.644204</td>
+<td>1.125178</td>
+<td>1055.532127</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">min</td>
+<td>0.290037</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>131200.000000</td>
+<td>35000.000000</td>
+<td>2.000000</td>
+<td>-75.263084</td>
+<td>39.912544</td>
+<td>1300.000000</td>
+<td>1.000000</td>
+<td>956.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">25%</td>
+<td>1047.500000</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>239900.000000</td>
+<td>235000.000000</td>
+<td>3.000000</td>
+<td>-75.194220</td>
+<td>39.999107</td>
+<td>1544.000000</td>
+<td>2.000000</td>
+<td>1314.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">50%</td>
+<td>1653.000000</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>293500.000000</td>
+<td>299900.000000</td>
+<td>3.000000</td>
+<td>-75.150970</td>
+<td>40.034817</td>
+<td>1814.000000</td>
+<td>2.000000</td>
+<td>1520.000000</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">75%</td>
+<td>2898.000000</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>419500.000000</td>
+<td>385000.000000</td>
+<td>4.000000</td>
+<td>-75.046425</td>
+<td>40.060947</td>
+<td>2297.000000</td>
+<td>3.000000</td>
+<td>1917.000000</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">max</td>
+<td>9370.000000</td>
+<td>NaN</td>
+<td>15000.0</td>
+<td>810900.000000</td>
+<td>895000.000000</td>
+<td>9.000000</td>
+<td>-74.964680</td>
+<td>40.096527</td>
+<td>6259.000000</td>
+<td>8.000000</td>
+<td>7119.000000</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+    <div class="colab-df-buttons">
+
+  <div class="colab-df-container">
+    <button class="colab-df-convert" onclick="convertToInteractive('df-f0928469-141c-49f6-ad7a-e3dcf20d6390')" title="Convert this dataframe to an interactive table." style="display:none;">
+
+  <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 -960 960 960">
+    <path d="M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z"></path>
+  </svg>
+    </button>
+
+  <style>
+    .colab-df-container {
+      display:flex;
+      gap: 12px;
+    }
+
+    .colab-df-convert {
+      background-color: #E8F0FE;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none;
+      fill: #1967D2;
+      height: 32px;
+      padding: 0 0 0 0;
+      width: 32px;
+    }
+
+    .colab-df-convert:hover {
+      background-color: #E2EBFA;
+      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);
+      fill: #174EA6;
+    }
+
+    .colab-df-buttons div {
+      margin-bottom: 4px;
+    }
+
+    [theme=dark] .colab-df-convert {
+      background-color: #3B4455;
+      fill: #D2E3FC;
+    }
+
+    [theme=dark] .colab-df-convert:hover {
+      background-color: #434B5C;
+      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));
+      fill: #FFFFFF;
+    }
+  </style>
+
+    <script>
+      const buttonEl =
+        document.querySelector('#df-f0928469-141c-49f6-ad7a-e3dcf20d6390 button.colab-df-convert');
+      buttonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+
+      async function convertToInteractive(key) {
+        const element = document.querySelector('#df-f0928469-141c-49f6-ad7a-e3dcf20d6390');
+        const dataTable =
+          await google.colab.kernel.invokeFunction('convertToInteractive',
+                                                    [key], {});
+        if (!dataTable) return;
+
+        const docLinkHtml = 'Like what you see? Visit the ' +
+          '<a target="_blank" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'
+          + ' to learn more about interactive tables.';
+        element.innerHTML = '';
+        dataTable['output_type'] = 'display_data';
+        await google.colab.output.renderOutput(dataTable, element);
+        const docLink = document.createElement('div');
+        docLink.innerHTML = docLinkHtml;
+        element.appendChild(docLink);
+      }
+    </script>
+  </div>
+
+
+<div id="df-5590ec7f-9c49-4ac6-81c0-b8a270f83da8">
+  <button class="colab-df-quickchart" onclick="quickchart('df-5590ec7f-9c49-4ac6-81c0-b8a270f83da8')" title="Suggest charts." style="display:none;">
+
+<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewbox="0 0 24 24" width="24px">
+    <g>
+        <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path>
+    </g>
+</svg>
+  </button>
+
+<style>
+  .colab-df-quickchart {
+      --bg-color: #E8F0FE;
+      --fill-color: #1967D2;
+      --hover-bg-color: #E2EBFA;
+      --hover-fill-color: #174EA6;
+      --disabled-fill-color: #AAA;
+      --disabled-bg-color: #DDD;
+  }
+
+  [theme=dark] .colab-df-quickchart {
+      --bg-color: #3B4455;
+      --fill-color: #D2E3FC;
+      --hover-bg-color: #434B5C;
+      --hover-fill-color: #FFFFFF;
+      --disabled-bg-color: #3B4455;
+      --disabled-fill-color: #666;
+  }
+
+  .colab-df-quickchart {
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: none;
+    fill: var(--fill-color);
+    height: 32px;
+    padding: 0;
+    width: 32px;
+  }
+
+  .colab-df-quickchart:hover {
+    background-color: var(--hover-bg-color);
+    box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px 1px rgba(60, 64, 67, 0.15);
+    fill: var(--button-hover-fill-color);
+  }
+
+  .colab-df-quickchart-complete:disabled,
+  .colab-df-quickchart-complete:disabled:hover {
+    background-color: var(--disabled-bg-color);
+    fill: var(--disabled-fill-color);
+    box-shadow: none;
+  }
+
+  .colab-df-spinner {
+    border: 2px solid var(--fill-color);
+    border-color: transparent;
+    border-bottom-color: var(--fill-color);
+    animation:
+      spin 1s steps(1) infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+      border-left-color: var(--fill-color);
+    }
+    20% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    30% {
+      border-color: transparent;
+      border-left-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+      border-right-color: var(--fill-color);
+    }
+    40% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-top-color: var(--fill-color);
+    }
+    60% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+    }
+    80% {
+      border-color: transparent;
+      border-right-color: var(--fill-color);
+      border-bottom-color: var(--fill-color);
+    }
+    90% {
+      border-color: transparent;
+      border-bottom-color: var(--fill-color);
+    }
+  }
+</style>
+
+  <script>
+    async function quickchart(key) {
+      const quickchartButtonEl =
+        document.querySelector('#' + key + ' button');
+      quickchartButtonEl.disabled = true;  // To prevent multiple clicks.
+      quickchartButtonEl.classList.add('colab-df-spinner');
+      try {
+        const charts = await google.colab.kernel.invokeFunction(
+            'suggestCharts', [key], {});
+      } catch (error) {
+        console.error('Error during call to suggestCharts:', error);
+      }
+      quickchartButtonEl.classList.remove('colab-df-spinner');
+      quickchartButtonEl.classList.add('colab-df-quickchart-complete');
+    }
+    (() => {
+      let quickchartButtonEl =
+        document.querySelector('#df-5590ec7f-9c49-4ac6-81c0-b8a270f83da8 button');
+      quickchartButtonEl.style.display =
+        google.colab.kernel.accessAllowed ? 'block' : 'none';
+    })();
+  </script>
+</div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
