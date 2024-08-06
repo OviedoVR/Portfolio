@@ -103,7 +103,7 @@ O dashboard pode ser visualizado abaixo ou acessado via Google Looker Studio ([a
 <iframe width="100%" height="800" src="https://lookerstudio.google.com/embed/reporting/cb572375-1215-42ec-bf4d-fa17a1c2a310/page/tfugD" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
 
 
-### Validação e Deploy
+# Validação e Deploy
 
 Após validação dos critérios e do dashboard, os dados podem ser atualizados contstantemente e de maneira escalável. Quanto aos custos, a API conta com os seguintes planos:
 
