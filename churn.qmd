@@ -13,7 +13,7 @@ A Telecom (empresa do setor de telefonia e comunicações) deseja **reduzir a ta
 Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via MS Excel. No entanto, nesta página você encontra as mesmas análises de maneira interativa (fundamentada em Python e Quarto Markdown).
 
 ::: {.callout-note title="Nota"}
-O arquivo em MS Excel pode ser encontrado [aqui](https://github.com/OviedoVR).
+O arquivo em MS Excel pode ser encontrado [aqui](https://github.com/OviedoVR/Portfolio/blob/main/analise_de_churn.xlsx).
 :::
 
 # Entendimento do negócio
