@@ -1,0 +1,632 @@
+---
+title: "Análise de churn"
+author: "Vinícius Oviedo"
+lang: pt-br
+---
+
+# Contexto 
+
+A Telecom (empresa do setor de telefonia e comunicações) deseja **reduzir a taxa churn** da sua base de clientes. Em outras palavas, ela quer reduzir o percentual de clientes que cancelam a assinatura de seus produtos/serviços. Para isso, disponibilizou-se dados históricos onde se busca a extração insights que podem contribuir para a redução do churn por parte do negócio. 
+
+![](assets/churn-cover.png){width=90%}
+
+Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via MS Excel. No entanto, nesta página você encontra as mesmas análises de maneira interativa (fundamentada em Python e Quarto Markdown).
+
+::: {.callout-note title="Nota"}
+O arquivo em MS Excel pode ser encontrado [aqui](https://github.com/OviedoVR).
+:::
+
+# Entendimento do negócio
+
+## Objetivo
+
+Compreender a taxa de churn atual e extrair insights que possibilitem o negócio reduzir o percentual de churn via decisões baseadas em dados.
+
+## Premissas
+
+Como premissas para o projeto, tem-se:
+
+- Os dados da plataforma são representativos e atualizados.
+
+## Critérios de sucesso
+
+Encontrar oportunidades onde:
+
+* Estimar a taxa de churn atual.
+* Extrair insights acionáveis que permitam reduzir o churn.
+
+# Entendimento dos dados
+
+O dataset original constou de 7043 linhas e 21 colunas. Como metadados, tem-se para as principais colunas:
+
+| Field                             | Description                                                                                                                                                                                                             |
+|-----------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `customerID`                        | Um ID único que identifica cada cliente                                                                                                                                                                                 |
+| `gender`                            | O gênero do cliente: Masculino, Feminino                                                                                                                                                                               |
+| `Partner`                           | Indica se o cliente é casado: Sim, Não                                                                                                                                                                                  |
+| `Dependents`              | Indica so cliente tem dependentes                                             |                                                                                                                    |
+| `tenure` | Indica o total de meses que o cliente está com a empresa                                                                                                                    |                                                                                                |
+| `PhoneService`                     | Indica se o cliente assina o serviço de telefone fixo com a empresa: Sim, Não                                                                                                                                           |                          |
+| `Multiple Lines`                    | Indica se o cliente assina múltiplas linhas telefônicas com a empresa: Sim, Não (se o cliente não assina o serviço de telefone fixo, este valor será Não)                                                               |
+| `InternetService`                     | Indica o tipo de conexão de Internet do cliente: DSL, Fibra Óptica, Cabo (se o cliente não assina o serviço de Internet, este valor será Nenhum)                                                                        |                            |
+| `TechSupport`              | Indica se o cliente assina um plano adicional de suporte técnico da empresa com tempos de espera reduzidos: Sim, Não (se o cliente não assina o serviço de Internet, este valor será Não)                               |
+| `StreamingMovies`                  | Indica se o cliente usa seu serviço de Internet para transmitir filmes de um fornecedor terceirizado sem custo adicional: Sim, Não (se o cliente não assina o serviço de Internet, este valor será Não)                 |                               |
+| `Contract`                          | Indica o tipo de contrato atual do cliente: Mês-a-Mês, Um Ano, Dois Anos                                                                                                                                                |
+| `PaymentMethod`                    | Indica como o cliente paga sua conta: Débito Automático, Cartão de Crédito, Cheque Enviado                                                                                                                              |
+| `MonthlyCharges`                    | Indica o valor total mensal atual que o cliente paga por todos os seus serviços da empresa                                                                                                                              |
+| `TotalCharges`                     | Indica as cobranças totais do cliente, calculadas até o final do trimestre especificado acima                                                                                                                           |
+| `Churn`                     | Indica se o cliente está em estado de churn ou não |
+
+# Análise/Modelagem
+
+Com base no conjunto de dados, o foco se deu em responder e/ou validar as seguintes perguntas de negócio/hipótestes:
+
+- Qual é a taxa de churn atual?
+- Qual é o mês mais crítico para um cliente entrar em estado de churn? 
+- Qual é o mês ideal para fidelizar um cliente?
+- Existe diferença do % churn quanto os tipos de assinatura?
+- Como o % churn se comporta frente ao estado civil?
+- Qual a relação entre o valor da subscrição e o churn?
+- O método de pagamento influencia no churn? 
+- Qual a relação entre o número de dependentes e o churn?
+- Oferecer suporte técnico diferenciado reduz o churn?
+
+
+Para isso utilizou-se, num primeiro momento, a análise de Information Value (IV) de forma a responder a pergunta:
+
+> **Quais(a) são() as variáveis que melhor explicam se um cliente vai entrar em churn ou não?**
+
+## **Análise de IV**
+
+A análise de IV é utilizada para "rankear" variáveis de acordo com o seu grau de discriminção quanto a uma resposta binária (e.g., cliente ativo versus churn, transação fidedigna versus fraudulenta, adimplência versus inadimplência). Formalmente é dada pela equação abaixo:
+
+\begin{equation}
+  IV = \sum \left( \textrm{distribuição resposta 1} - \textrm{discribuição resposta 0} \right) \times ln(odds)
+\end{equation}
+
+Onde:
+
+\begin{equation}
+  odds = \frac{\textrm{\% observações onde a resposta é igual a 1 (SIM)}}{\textrm{\% observações onde a resposta é igual a 0 (NÃO)}}
+\end{equation}
+
+No contexto desse projeto, a análise de IV nos indica o quanto cada variável contribui para discriminar um cliente quanto sua propensão ao churn. Abaixo, seguem os resultados obtidos para o conjunto de dados em questão:
+
+
+| Variável        | IV    | Poder de separação quanto ao   churn |
+|-----------------|-------|--------------------------------------|
+| Contract        | 1,24  | Muito forte                          |
+| Tenure          | 0,71  | muito forte                          |
+| PaymentMethod   | 0,46  | forte                                |
+| TechSupport     | 0,39  | forte                                |
+| MonthlyCharges  | 0,37  | forte                                |
+| Dependents      | 0,16  | médio                                |
+| TotalCharges    | 0,06  | fraco                                |
+| Partner         | 0,012 | muito fraco                          |
+| PhoneService    | 0,010 | muito fraco                          |
+| StreamingMovies | 0,007 | muito fraco                          |
+
+<br>
+
+Nas seções seguintes, as perguntas elaboradas na etapa **Análise/Modelagem** foram respondidas. 
+
+> **Observação:** as colunas onde o IV é "fraco" ou "muito fraco" não contribuem para distinguir um cliente quanto ao churn. Logo, não foram encontrados insights pertinentes para o contexto de negócio nestes casos.
+
+```{python}
+#| echo: false
+# -- Bibliotecas:
+# manipulação de dados
+import pandas as pd
+import numpy as np
+
+# visualizaçao de dados
+import plotly.io as pio
+import plotly.express as px
+
+# configurações
+from custom_layout import *
+pio.templates.default = "simple_white"
+pd.options.plotting.backend = 'plotly'
+
+# paleta de cores:
+two_colors_palette = ['#E5E4E2', 'navy']
+
+# dados:
+customers = pd.read_excel('analise_de_churn.xlsx')
+```
+
+## **Taxa de churn atual**
+
+Para verificar a frequência absoluta (total de clientes) em cada categoria, você pode passar o mouse por cima do gráfico abaixo. 
+
+```{python}
+#| echo: false
+churn_rate = customers.groupby('Churn', as_index=False)['customerID'].count()
+churn_rate['Freq. abs.'] = churn_rate['customerID'] / churn_rate['customerID'].sum() * 100
+```
+
+```{python}
+#| echo: false
+fig = px.pie(churn_rate, values='customerID', names='Churn', color_discrete_sequence=['whitesmoke', '#CC5500'])
+fig.update_layout(custom_layout, width=300, height=300, title='Churn (base de 7043 clientes)<b>').show()
+```
+
+* A taxa de churn atual é de **26.5%**. 
+* Isso é bom? qual a meta estipulada pelo negócio?
+
+
+## **Mês mais crítico para um cliente entrar em churn?**
+
+```{python}
+#| echo: false
+churn_by_tenure = customers.groupby(['Churn', 'tenure'], as_index=False)['customerID'].count()
+churn_by_tenure = churn_by_tenure.query('tenure <= 12')
+churn_by_tenure = churn_by_tenure.rename(columns={'customerID':'Customers', 'tenure': 'Tenure'})
+
+fig = px.line(churn_by_tenure, x='Tenure', y='Customers', color= 'Churn', color_discrete_sequence=['lightgray','#343434'])
+# CC5500
+
+# Marcadores nas linhas:
+for trace in fig.data:
+  trace.update(mode='lines+markers', line_shape='spline')
+
+# Marcador no mês 1:
+fig.add_vline(x=1, line_dash='dash', line_color='#CC5500', opacity=0.8, line_width=1.85, annotation_text='<b>  Mês 1 (mais crítico)<b>', annotation_font_color='#CC5500')
+# Hachura:
+fig.add_shape(
+            type='rect',
+            x0=-1,
+            x1=1,
+            y0=-20,
+            y1=450,
+            fillcolor='#CC5500',  # Cor da hachura (cinza com 30% de transparência)
+            opacity=0.08,
+            line=dict(width=0),  # Sem linha de contorno
+)
+
+
+# Layout:
+fig.update_layout(custom_layout, title='<b>Churn x tempo como cliente</b>', title_x=0.12)
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Meses como cliente')
+fig.update_yaxes(title='Contagem')
+
+# Print:
+fig.show()
+```
+
+<br>
+
+* O primeiro mês é o mês mais crítico para um cliente entrar em churn.
+* É crucial o cliente ter uma boa experiência nesse período.
+
+
+## **Mês para fidelizar?**
+
+```{python}
+#|echo: false
+churn_by_tenure = customers.groupby(['Churn', 'tenure'], as_index=False)['customerID'].count()
+churn_by_tenure = churn_by_tenure.query('tenure <= 18')
+churn_by_tenure = churn_by_tenure.rename(columns={'customerID':'Customers', 'tenure': 'Tenure'})
+
+fig = px.line(churn_by_tenure, x='Tenure', y='Customers', color= 'Churn', color_discrete_sequence=['lightgray','navy'])
+
+# Marcadores nas linhas:
+for trace in fig.data:
+  trace.update(mode='lines+markers', line_shape='spline')
+
+# Marcador no mês 6:
+fig.add_vline(x=6, line_dash='dash', line_color='navy', opacity=0.8, line_width=1.85, annotation_text='<b> Mês 6 (ideal para fidelizar)<b>', annotation_font_color='navy')
+# Hachura:
+fig.add_shape(
+            type='rect',
+            x0=6,
+            x1=19,
+            y0=-20,
+            y1=450,
+            fillcolor='royalblue',  # Cor da hachura (cinza com 30% de transparência)
+            opacity=0.05,
+            line=dict(width=0),  # Sem linha de contorno
+)
+
+# Layout:
+fig.update_layout(custom_layout, title='<b>Churn x tempo como cliente</b>', title_x=0.1)
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Meses como cliente')
+fig.update_yaxes(title='Contagem')
+
+# Print:
+fig.show()
+``` 
+
+<br>
+
+* O **sexto mês** é o ideal para **fidelizar um cliente** (a curva parece estabilizar, constando mais clientes ativos que clientes em churn). 
+* Sucintamente, se a empresa conseguir manter o cliente por no mínimo **um semestre**, a probabilidade de ele **manter** a assinatura é muito grande.
+
+
+## **Churn por tipo de assinatura**
+
+```{python}
+#|echo: false
+# Contagem de customerID por Churn e Contract
+churn_by_contract = customers.groupby(['Churn', 'Contract'], as_index=False)['customerID'].count()
+# Renomeando a coluna para 'count'
+churn_by_contract.rename(columns={'customerID': 'Customers'}, inplace=True)
+
+# Obtendo a taxa de churn:
+total_customers_monthly = customers.query('Contract == "Month-to-month"')['customerID'].count()
+total_customers_yearly = customers.query('Contract == "One year"')['customerID'].count()
+total_customers_2y = customers.query('Contract == "Two year"')['customerID'].count()
+# --
+churn_by_contract['Subtotals'] = churn_by_contract['Contract'].apply(
+    lambda record: 
+    total_customers_monthly if record == "Month-to-month"
+    else total_customers_yearly if record == "One year"
+    else total_customers_2y
+)
+# --
+churn_by_contract['Percent'] = churn_by_contract['Customers'] / churn_by_contract['Subtotals'] * 100
+```
+
+```{python}
+#|echo: false
+fig = px.bar(
+    churn_by_contract.query('Churn == "Yes"'),
+    x='Contract',
+    y='Percent',
+    color='Contract',
+    color_discrete_sequence=['#CC5500', 'lightgray', 'lightgray'],
+    opacity=0.9
+)
+
+# Marcador da média global:
+churn_rate = round( customers.query('Churn == "Yes"')['customerID'].count() / customers['customerID'].count() * 100, 1)
+fig.add_hline(y=churn_rate, line_dash='dash', line_color='black', line_width=1.85, opacity=0.5, annotation_text=f'<b> Média: {churn_rate}%<b>', annotation_font_color='#CC5500')
+
+# Layout:
+fig.update_traces(hovertemplate='Churn: %{y:.1f}%<extra></extra>')
+fig.update_layout(
+    custom_layout, 
+    width=500,
+    height=300,
+    title='<b>Churn x tipo de assinatura</b>', 
+    title_x=0.12, bargap=0.35, 
+    showlegend=False
+)
+
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Assinatura')
+fig.update_yaxes(title='% Churn')
+
+# Print:
+fig.show()
+```
+
+<br>
+
+* Clientes com assinatura **mensal** têm **maior % churn** (muito acima da média).
+* Quanto **mais longo** o contrato, **menor** é a propensão ao **churn**.
+
+
+## **Churn por método de pagamento**
+
+```{python}
+#|echo: false
+# Contagem de customerID por Churn e PaymentMethod
+churn_by_paymethod = customers.groupby(['Churn', 'PaymentMethod'], as_index=False)['customerID'].count()
+
+# Renomeando a coluna para 'Customers'
+churn_by_paymethod.rename(columns={'customerID': 'Customers'}, inplace=True)
+
+# Calculando o total de clientes por PaymentMethod
+totals_by_paymethod = customers.groupby('PaymentMethod')['customerID'].count().reset_index()
+
+# Renomeando a coluna para 'Subtotals'
+totals_by_paymethod.rename(columns={'customerID': 'Subtotals'}, inplace=True)
+
+# Mesclando os DataFrames
+churn_by_paymethod = churn_by_paymethod.merge(totals_by_paymethod, on='PaymentMethod')
+
+# Calculando o percentual de churn
+churn_by_paymethod['Percent'] = churn_by_paymethod['Customers'] / churn_by_paymethod['Subtotals'] * 100
+
+fig = px.bar(
+    churn_by_paymethod.query('Churn == "Yes"'),
+    x='PaymentMethod',
+    y='Percent',
+    color='PaymentMethod',
+    color_discrete_sequence=['lightgray', 'lightgray', '#CC5500', 'lightgray'],
+    opacity=0.9
+)
+
+# Marcador da média global:
+churn_rate = round( customers.query('Churn == "Yes"')['customerID'].count() / customers['customerID'].count() * 100, 1)
+fig.add_hline(
+    y=churn_rate,
+    line_dash='dash',
+    line_color='black',
+    opacity=0.5,
+    line_width=1.85,
+    annotation_text=f'<b> Média: {churn_rate}%<b>',
+    annotation_font_color='#CC5500'
+)
+
+# Layout:
+fig.update_traces(hovertemplate='Churn: %{y:.1f}%<extra></extra>')
+fig.update_layout(
+    custom_layout,
+    width=650,
+    height=300,
+    title='<b>Churn x tipo método de pagamento</b>',
+    title_x=0.12, bargap=0.35,
+    showlegend=False
+)
+
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Método de pagamento')
+fig.update_yaxes(title='% Churn')
+
+# Print:
+fig.show()
+```
+
+<br>
+
+* Clientes que pagam via **boleto eletrônico** têm maior taxa de churn (18 p.p. acima da média). 
+* Os demais tipos de pagamento possuem % churn **abaixo da média** geral (< 26.5%).
+
+> **OBS.:** p.p. significa pontos percentuais.
+
+> Por que boleto é tão discrepante?
+
+* **Hipótese:** clientes podem esquecer a data de pagamento e  gerar multas. 
+* **Sugestão:** pesquisa de satisfação com esse público.
+
+## **Churn versus suporte técnico de qualidade**
+
+```{python}
+#|echo: false
+# Contagem de customerID por Churn e PaymentMethod
+churn_by_support = customers.groupby(['Churn', 'TechSupport'], as_index=False)['customerID'].count()
+
+# Renomeando a coluna para 'Customers'
+churn_by_support.rename(columns={'customerID': 'Customers'}, inplace=True)
+
+# Calculando o total de clientes por PaymentMethod
+totals_by_support_cat = customers.groupby('TechSupport')['customerID'].count().reset_index()
+
+# Renomeando a coluna para 'Subtotals'
+totals_by_support_cat.rename(columns={'customerID': 'Subtotals'}, inplace=True)
+
+# Mesclando os DataFrames
+churn_by_support = churn_by_support.merge(totals_by_support_cat, on='TechSupport')
+
+# Calculando o percentual de churn
+churn_by_support['Percent'] = churn_by_support['Customers'] / churn_by_support['Subtotals'] * 100
+
+fig = px.bar(
+    churn_by_support.query('Churn == "Yes"'),
+    x='TechSupport',
+    y='Percent',
+    color='TechSupport',
+    color_discrete_sequence=['#CC5500', 'lightgray', 'lightgray'],
+    opacity=0.9
+)
+
+# Marcador da média global:
+churn_rate = round( customers.query('Churn == "Yes"')['customerID'].count() / customers['customerID'].count() * 100, 1)
+fig.add_hline(
+    y=churn_rate,
+    line_dash='dash',
+    line_color='black',
+    opacity=0.5,
+    line_width=1.85,
+    annotation_text=f'<b> Média: {churn_rate}%<b>',
+    annotation_font_color='#CC5500'
+)
+
+# Layout:
+fig.update_traces(hovertemplate='Churn: %{y:.1f}%<extra></extra>')
+fig.update_layout(
+    custom_layout,
+    width=500,
+    height=300,
+    title='<b>Churn x suporte técnico</b>',
+    title_x=0.12, bargap=0.35,
+    showlegend=False
+)
+
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Suporte Técninco')
+fig.update_yaxes(title='% Churn')
+
+# Print:
+fig.show()
+```
+
+<br>
+
+* O **churn** para clientes que **não receberam suporte técnico diferenciado** é muito **maior** que a média (diferença de 15 p.p.). 
+* Isso demonstra quão importante é a experiência do usuário pós-surgimento de qualquer problema técnico ou dúvida sobre os serviços oferecidos. 
+* Como essa variável tem um custo adicional, será que não é interessante oferecer a todos os clientes o mesmo tipo de suporte técnico e refletir no valor do plano (reajustando todas as opções de preço)?
+
+> **OBS.:** p.p. significa pontos percentuais.
+
+
+## **Churn versus cobranças mensais**
+
+Como é o valor correspondente às cobranças mensais para os clientes que entraram em churn? É maior que a média global (65 USD)?
+
+```{python}
+#|echo: false
+# Função para customizar os facets:
+def update_facet_axes(fig):
+    # Atualizar todos os eixos de facetas
+    fig.update_xaxes(showgrid=False, showline=True, linecolor='lightgray', tickcolor='lightgray')
+    fig.update_yaxes(showgrid=False, showline=True, linecolor='lightgray', tickcolor='lightgray')
+    return fig
+```
+
+```{python}
+#|echo: false
+mean_m_charges = round(customers['MonthlyCharges'].mean(), 0)
+customers['MontlyChargesClass'] = customers['MonthlyCharges'].apply(
+    lambda record: 
+    'Below average' if record  < mean_m_charges else 'Above average'
+)
+
+fig = px.scatter(
+    customers,
+    y='MonthlyCharges',
+    facet_col='Churn',
+    color='MontlyChargesClass',
+    hover_data = ['customerID'],
+    color_discrete_sequence=['navy', 'lightgray']
+) #other color (orange): CC5500
+
+mean_m_charges = round(customers['MonthlyCharges'].mean(), 0)
+fig.add_hline(
+    y=mean_m_charges,
+    line_dash='dash',
+    line_color='gray',
+    opacity=0.5,
+    line_width=1.85,
+    annotation_text=f'<b> Média: {int(mean_m_charges)} USD<b>',
+    annotation_font_color='navy'
+)
+fig.update_traces(marker={'size': 10, 'opacity': 0.35})
+
+# Atualizar o eixo X para omitir o título, ticks e valores
+fig.update_xaxes(title='', showticklabels=False)
+
+# Layout dos facets:
+fig = update_facet_axes(fig)
+# Layout global:
+fig.update_layout(
+    custom_layout,
+    height=500,
+)
+
+fig.show()
+```
+
+<br>
+
+* Cada ponto é um cliente. No grupo de **clientes em churn** (gráfico da DIREITA), parece ter **muito menos** clientes pagando **abaixo da média** (indicando altos valores sendo cobrados mensalmente por grande parte desse grupo).
+* No caso do grupo de clientes ativos (**churn = não**, gráfico da ESQUERDA), parece ter uma **proporção parelha** entre clientes que pagam **abaixo** e **acima** da média.
+
+```{python}
+#|echo: false
+# Contagem churned customers:
+monthly_paying_churned_cust = customers.query('Churn == "Yes"').groupby('MontlyChargesClass', as_index=False)['customerID'].count()
+monthly_paying_churned_cust = monthly_paying_churned_cust.rename(
+    columns = {'customerID': 'Customers'}
+)
+total_churned_customers = customers.query('Churn == "Yes"')['customerID'].count()
+monthly_paying_churned_cust['%'] = round(monthly_paying_churned_cust['Customers'] / total_churned_customers *100, 2)
+monthly_paying_churned_cust['Churn'] = 'Yes'
+
+# Contagem active customers:
+monthly_paying_active_cust = customers.query('Churn == "No"').groupby('MontlyChargesClass', as_index=False)['customerID'].count()
+monthly_paying_active_cust = monthly_paying_active_cust.rename(
+    columns = {'customerID': 'Customers'}
+)
+total_active_customers = customers.query('Churn == "No"')['customerID'].count()
+monthly_paying_active_cust['%'] = round(monthly_paying_active_cust['Customers'] / total_active_customers *100, 2)
+monthly_paying_active_cust['Churn'] = 'No'
+
+# Concatenação dos dataframes:
+monthly_paying_customers = pd.concat([monthly_paying_churned_cust, monthly_paying_active_cust], axis=0)
+monthly_paying_customers 
+```
+
+<br>
+
+Podemos verificar isso estatisticamente via um teste de hipótestes - o **teste Z para proporções** (2 amostras), onde:
+
+* **Hipótese Nula ($H_o$)**: a proporção de clientes que pagam abaixo da média entre os dois grupos (churn e não-churn) é igual.
+* **Hipótese Alternativa ($H_1$)**: a proporção de clientes que pagam abaixo da média entre os dois grupos (churn e não-churn) é diferente.
+
+Resultados (oriundos do MS Excel):
+
+* Z = -9,498
+* p = 2,147 $\times 10^{-21}$
+
+Logo:
+
+* Como $p < 0,05$, rejeita-se $H_0$. Em outras palavras, a proporção de **clientes em** estado de **churn** que costumam pagar valores mensais **abaixo da média** geral é muito menor comparado ao clientes ativos (não-churn). 
+* Isso pode certamente levar à decisão do cancelamento dos serviços. A questão é, por que esses clientes (grupo da direita) estão pagando altos valores mensais?
+
+
+## **Churn versus dependentes**
+
+```{python}
+#|echo: false
+# Contagem de customerID por Churn e PaymentMethod
+churn_by_dependents = customers.groupby(['Churn', 'Dependents'], as_index=False)['customerID'].count()
+
+# Renomeando a coluna para 'Customers'
+churn_by_dependents.rename(columns={'customerID': 'Customers'}, inplace=True)
+
+# Calculando o total de clientes por PaymentMethod
+totals_by_dependents= customers.groupby('Dependents')['customerID'].count().reset_index()
+
+# Renomeando a coluna para 'Subtotals'
+totals_by_dependents.rename(columns={'customerID': 'Subtotals'}, inplace=True)
+
+# Mesclando os DataFrames
+churn_by_dependents = churn_by_dependents.merge(totals_by_dependents, on='Dependents')
+
+# Calculando o percentual de churn
+churn_by_dependents['Percent'] = churn_by_dependents['Customers'] / churn_by_dependents['Subtotals'] * 100
+
+fig = px.bar(
+    churn_by_dependents.query('Churn == "Yes"'),
+    x='Dependents',
+    y='Percent',
+    color='Dependents',
+    color_discrete_sequence=['#CC5500', 'lightgray', 'lightgray'],
+    opacity=0.9
+)
+
+# Marcador da média global:
+churn_rate = round( customers.query('Churn == "Yes"')['customerID'].count() / customers['customerID'].count() * 100, 1)
+fig.add_hline(
+    y=churn_rate,
+    line_dash='dash',
+    line_color='black',
+    opacity=0.5,
+    line_width=1.85,
+    annotation_text=f'<b> Média: {churn_rate}%<b>',
+    annotation_font_color='#CC5500'
+)
+
+# Layout:
+fig.update_traces(hovertemplate='Churn: %{y:.1f}%<extra></extra>')
+fig.update_layout(
+    custom_layout,
+    width=400,
+    height=300,
+    title='<b>Churn x dependentes</b>',
+    title_x=0.12, bargap=0.35,
+    showlegend=False
+)
+
+# Adicionando títulos aos eixos x e y:
+fig.update_xaxes(title='Possui dependentes')
+fig.update_yaxes(title='% Churn')
+
+# Print:
+fig.show()
+```
+
+<br>
+
+* Clientes **com dependentes** têm **menor** propensão ao **churn**. 
+* Isso provavelmente se dá pois, ao cancelar os serviços, seus dependentes também perdem os benefícios. Assim, um cliente sem dependentes não pensa duas vezes quando cogita cancelar a assinatura.
+
+
+# Validação e Deploy
+
+Após validação dos insights, os resultados encontrados podem ser entregues e discutidos com o negócio. Aqui, vale fazer uso de experimentação via testes A/B e acompanhar o churn ao longo do tempo (pós-implementação de ações que buscem o objetivo da empresa).

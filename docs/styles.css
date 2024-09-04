@@ -1,1 +1,14 @@
 /* css styles */
+
+/* Estilo para as tabelas */
+table {
+    margin: auto;
+    font-size: 0.9em; /* Ajuste o tamanho da fonte conforme necessário */
+    border-collapse: collapse;
+}
+  
+table caption {
+    caption-side: top;
+    font-weight: bold;
+    font-size: 1em; /* Ajuste o tamanho da legenda conforme necessário */
+}

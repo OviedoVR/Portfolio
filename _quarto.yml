@@ -11,13 +11,15 @@ website:
       - href: segmentation.qmd
         text: Segmentação de clientes
       - href: realestate.qmd
-        text: Oportunidades em Real Estate (Zillow, EUA)        
+        text: Oportunidades em Real Estate (Zillow, EUA)   
+      - href: churn.qmd
+        text: Análise de churn     
 
 format:
   html:
     theme: cosmo
     css: styles.css
-    toc: true
+    toc: false
     code-fold: false
     code-block-bg: true
     code-block-border-left: false

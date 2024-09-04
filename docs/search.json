@@ -46,7 +46,119 @@
     "href": "index.html",
     "title": "Portfolio de Análise de Dados",
     "section": "",
-    "text": "Bem-vindo ao meu portfolio de Análise de Dados. Nesta página, você encontrará os seguintes projetos:\n\nSegmentação de clientes do setor com Machine Learning\nBuscando oportunidades com os dados da Zillow (EUA, setor imobiliário)\n\nVocê pode acessá-los por meio da guia de navegação no topo da página.\n\nDesenvolvido com Quarto markdown (mais detalhes em https://quarto.org/docs/websites)."
+    "text": "Bem-vindo ao meu portfolio de Análise de Dados. Nesta página, você encontrará os seguintes projetos:"
+  },
+  {
+    "objectID": "index.html#segmentação-de-clientes-do-setor-com-machine-learning",
+    "href": "index.html#segmentação-de-clientes-do-setor-com-machine-learning",
+    "title": "Portfolio de Análise de Dados",
+    "section": "Segmentação de clientes do setor com Machine Learning",
+    "text": "Segmentação de clientes do setor com Machine Learning"
+  },
+  {
+    "objectID": "index.html#análise-de-churn",
+    "href": "index.html#análise-de-churn",
+    "title": "Portfolio de Análise de Dados",
+    "section": "Análise de churn",
+    "text": "Análise de churn"
+  },
+  {
+    "objectID": "index.html#buscando-oportunidades-com-os-dados-da-zillow-eua-setor-imobiliário",
+    "href": "index.html#buscando-oportunidades-com-os-dados-da-zillow-eua-setor-imobiliário",
+    "title": "Portfolio de Análise de Dados",
+    "section": "Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)",
+    "text": "Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)\n\n\nDesenvolvido com Quarto markdown (mais detalhes em https://quarto.org/docs/websites)."
+  },
+  {
+    "objectID": "churn.html",
+    "href": "churn.html",
+    "title": "Análise de churn",
+    "section": "",
+    "text": "A Telecom (empresa do setor de telefonia e comunicações) deseja reduzir a taxa churn da sua base de clientes. Em outras palavas, ela quer reduzir o percentual de clientes que cancelam a assinatura de seus produtos/serviços. Para isso, disponibilizou-se dados históricos onde se busca a extração insights que podem contribuir para a redução do churn por parte do negócio.\n\nNesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via MS Excel. No entanto, nesta página você encontra as mesmas análises de maneira interativa (fundamentada em Python e Quarto Markdown).\n\n\n\n\n\n\nNota\n\n\n\nO arquivo em MS Excel pode ser encontrado aqui."
+  },
+  {
+    "objectID": "churn.html#objetivo",
+    "href": "churn.html#objetivo",
+    "title": "Análise de churn",
+    "section": "Objetivo",
+    "text": "Objetivo\nCompreender a taxa de churn atual e extrair insights que possibilitem o negócio reduzir o percentual de churn via decisões baseadas em dados."
+  },
+  {
+    "objectID": "churn.html#premissas",
+    "href": "churn.html#premissas",
+    "title": "Análise de churn",
+    "section": "Premissas",
+    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nOs dados da plataforma são representativos e atualizados."
+  },
+  {
+    "objectID": "churn.html#critérios-de-sucesso",
+    "href": "churn.html#critérios-de-sucesso",
+    "title": "Análise de churn",
+    "section": "Critérios de sucesso",
+    "text": "Critérios de sucesso\nEncontrar oportunidades onde:\n\nEstimar a taxa de churn atual.\nExtrair insights acionáveis que permitam reduzir o churn."
+  },
+  {
+    "objectID": "churn.html#análise-de-iv",
+    "href": "churn.html#análise-de-iv",
+    "title": "Análise de churn",
+    "section": "Análise de IV",
+    "text": "Análise de IV\nA análise de IV é utilizada para “rankear” variáveis de acordo com o seu grau de discriminção quanto a uma resposta binária (e.g., cliente ativo versus churn, transação fidedigna versus fraudulenta, adimplência versus inadimplência). Formalmente é dada pela equação abaixo:\n\\[\\begin{equation}\n  IV = \\sum \\left( \\textrm{distribuição resposta 1} - \\textrm{discribuição resposta 0} \\right) \\times ln(odds)\n\\end{equation}\\]\nOnde:\n\\[\\begin{equation}\n  odds = \\frac{\\textrm{\\% observações onde a resposta é igual a 1 (SIM)}}{\\textrm{\\% observações onde a resposta é igual a 0 (NÃO)}}\n\\end{equation}\\]\nNo contexto desse projeto, a análise de IV nos indica o quanto cada variável contribui para discriminar um cliente quanto sua propensão ao churn. Abaixo, seguem os resultados obtidos para o conjunto de dados em questão:\n\n\n\nVariável\nIV\nPoder de separação quanto ao churn\n\n\n\n\nContract\n1,24\nMuito forte\n\n\nTenure\n0,71\nmuito forte\n\n\nPaymentMethod\n0,46\nforte\n\n\nTechSupport\n0,39\nforte\n\n\nMonthlyCharges\n0,37\nforte\n\n\nDependents\n0,16\nmédio\n\n\nTotalCharges\n0,06\nfraco\n\n\nPartner\n0,012\nmuito fraco\n\n\nPhoneService\n0,010\nmuito fraco\n\n\nStreamingMovies\n0,007\nmuito fraco\n\n\n\n\nNas seções seguintes, as perguntas elaboradas na etapa Análise/Modelagem foram respondidas.\n\nObservação: as colunas onde o IV é “fraco” ou “muito fraco” não contribuem para distinguir um cliente quanto ao churn. Logo, não foram encontrados insights pertinentes para o contexto de negócio nestes casos."
+  },
+  {
+    "objectID": "churn.html#taxa-de-churn-atual",
+    "href": "churn.html#taxa-de-churn-atual",
+    "title": "Análise de churn",
+    "section": "Taxa de churn atual",
+    "text": "Taxa de churn atual\nPara verificar a frequência absoluta (total de clientes) em cada categoria, você pode passar o mouse por cima do gráfico abaixo.\n\n\n                                                \n\n\n\nA taxa de churn atual é de 26.5%.\nIsso é bom? qual a meta estipulada pelo negócio?"
+  },
+  {
+    "objectID": "churn.html#mês-mais-crítico-para-um-cliente-entrar-em-churn",
+    "href": "churn.html#mês-mais-crítico-para-um-cliente-entrar-em-churn",
+    "title": "Análise de churn",
+    "section": "Mês mais crítico para um cliente entrar em churn?",
+    "text": "Mês mais crítico para um cliente entrar em churn?\n\n\n                                                \n\n\n\n\nO primeiro mês é o mês mais crítico para um cliente entrar em churn.\nÉ crucial o cliente ter uma boa experiência nesse período."
+  },
+  {
+    "objectID": "churn.html#mês-para-fidelizar",
+    "href": "churn.html#mês-para-fidelizar",
+    "title": "Análise de churn",
+    "section": "Mês para fidelizar?",
+    "text": "Mês para fidelizar?\n\n\n                                                \n\n\n\n\nO sexto mês é o ideal para fidelizar um cliente (a curva parece estabilizar, constando mais clientes ativos que clientes em churn).\nSucintamente, se a empresa conseguir manter o cliente por no mínimo um semestre, a probabilidade de ele manter a assinatura é muito grande."
+  },
+  {
+    "objectID": "churn.html#churn-por-tipo-de-assinatura",
+    "href": "churn.html#churn-por-tipo-de-assinatura",
+    "title": "Análise de churn",
+    "section": "Churn por tipo de assinatura",
+    "text": "Churn por tipo de assinatura\n\n\n                                                \n\n\n\n\nClientes com assinatura mensal têm maior % churn (muito acima da média).\nQuanto mais longo o contrato, menor é a propensão ao churn."
+  },
+  {
+    "objectID": "churn.html#churn-por-método-de-pagamento",
+    "href": "churn.html#churn-por-método-de-pagamento",
+    "title": "Análise de churn",
+    "section": "Churn por método de pagamento",
+    "text": "Churn por método de pagamento\n\n\n                                                \n\n\n\n\nClientes que pagam via boleto eletrônico têm maior taxa de churn (18 p.p. acima da média).\nOs demais tipos de pagamento possuem % churn abaixo da média geral (&lt; 26.5%).\n\n\nOBS.: p.p. significa pontos percentuais.\n\n\nPor que boleto é tão discrepante?\n\n\nHipótese: clientes podem esquecer a data de pagamento e gerar multas.\nSugestão: pesquisa de satisfação com esse público."
+  },
+  {
+    "objectID": "churn.html#churn-versus-suporte-técnico-de-qualidade",
+    "href": "churn.html#churn-versus-suporte-técnico-de-qualidade",
+    "title": "Análise de churn",
+    "section": "Churn versus suporte técnico de qualidade",
+    "text": "Churn versus suporte técnico de qualidade\n\n\n                                                \n\n\n\n\nO churn para clientes que não receberam suporte técnico diferenciado é muito maior que a média (diferença de 15 p.p.).\nIsso demonstra quão importante é a experiência do usuário pós-surgimento de qualquer problema técnico ou dúvida sobre os serviços oferecidos.\nComo essa variável tem um custo adicional, será que não é interessante oferecer a todos os clientes o mesmo tipo de suporte técnico e refletir no valor do plano (reajustando todas as opções de preço)?\n\n\nOBS.: p.p. significa pontos percentuais."
+  },
+  {
+    "objectID": "churn.html#churn-versus-cobranças-mensais",
+    "href": "churn.html#churn-versus-cobranças-mensais",
+    "title": "Análise de churn",
+    "section": "Churn versus cobranças mensais",
+    "text": "Churn versus cobranças mensais\nComo é o valor correspondente às cobranças mensais para os clientes que entraram em churn? É maior que a média global (65 USD)?\n\n\n                                                \n\n\n\n\nCada ponto é um cliente. No grupo de clientes em churn (gráfico da DIREITA), parece ter muito menos clientes pagando abaixo da média (indicando altos valores sendo cobrados mensalmente por grande parte desse grupo).\nNo caso do grupo de clientes ativos (churn = não, gráfico da ESQUERDA), parece ter uma proporção parelha entre clientes que pagam abaixo e acima da média.\n\n\n\n\n\n\n\n\n\n\nMontlyChargesClass\nCustomers\n%\nChurn\n\n\n\n\n0\nAbove average\n1355\n72.50\nYes\n\n\n1\nBelow average\n514\n27.50\nYes\n\n\n0\nAbove average\n2549\n49.27\nNo\n\n\n1\nBelow average\n2625\n50.73\nNo\n\n\n\n\n\n\n\n\nPodemos verificar isso estatisticamente via um teste de hipótestes - o teste Z para proporções (2 amostras), onde:\n\nHipótese Nula (\\(H_o\\)): a proporção de clientes que pagam abaixo da média entre os dois grupos (churn e não-churn) é igual.\nHipótese Alternativa (\\(H_1\\)): a proporção de clientes que pagam abaixo da média entre os dois grupos (churn e não-churn) é diferente.\n\nResultados (oriundos do MS Excel):\n\nZ = -9,498\np = 2,147 \\(\\times 10^{-21}\\)\n\nLogo:\n\nComo \\(p &lt; 0,05\\), rejeita-se \\(H_0\\). Em outras palavras, a proporção de clientes em estado de churn que costumam pagar valores mensais abaixo da média geral é muito menor comparado ao clientes ativos (não-churn).\nIsso pode certamente levar à decisão do cancelamento dos serviços. A questão é, por que esses clientes (grupo da direita) estão pagando altos valores mensais?"
+  },
+  {
+    "objectID": "churn.html#churn-versus-dependentes",
+    "href": "churn.html#churn-versus-dependentes",
+    "title": "Análise de churn",
+    "section": "Churn versus dependentes",
+    "text": "Churn versus dependentes\n\n\n                                                \n\n\n\n\nClientes com dependentes têm menor propensão ao churn.\nIsso provavelmente se dá pois, ao cancelar os serviços, seus dependentes também perdem os benefícios. Assim, um cliente sem dependentes não pensa duas vezes quando cogita cancelar a assinatura."
   },
   {
     "objectID": "realestate.html",

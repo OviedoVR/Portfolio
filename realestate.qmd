@@ -2,10 +2,6 @@
 title: "Buscando oportunidades com os dados da Zillow (EUA, setor imobiliário)"
 author: "Vinícius Oviedo"
 lang: pt-br
-notebook-view:
-  - notebook: eda_modeling.ipynb
-    title: "EDA e modelagem"
-    url: https://colab.research.google.com/drive/1PSdbFAvjf6HKxqhZsuT85SLEoQGVZNEY?usp=sharing
 ---
 
 # Contexto 

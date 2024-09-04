@@ -37,6 +37,7 @@ Identificar no mínimo dois ou mais grupos de clientes, de forma que o negócio 
 
 Os dados correspondem **2240 linhas** e **28 colunas** referentes a dados dos clientes, bem como resultados de campanhas de marketing. O dataset apresenta como dicionário de dados:
 
+
 | Coluna                | Descrição                                                            |
 |-----------------------|----------------------------------------------------------------------|
 | `ID`                  | Identificador único do cliente                                       |
@@ -510,6 +511,8 @@ fig = update_facet_axes(fig)
 fig.show()
 ```
 
+<br>
+
 * Os clusters A e B parecem responder menos a campanhas de marketing.
 
 ### Canais de venda
@@ -580,7 +583,7 @@ fig.update_layout(custom_layout)
 
 * **Cluster A (baixa renda, poucas compras, clientes mais novos):** cliente com média 46 de anos, baixa renda, possui ensino superior, normalemente casado e aposentado, possui entre 0-1 filhos. Valoriza cada centavo gasto. Suas compras são guiadas por promoções e descontos, e não é fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa, preferindo informações de fontes confiáveis e próximas, como amigos e redes sociais. Esse tipo de cliente busca sempre o melhor custo-benefício para atender às suas necessidades e de sua família. Embora gaste pouco, costuma empregar seu dinheiro mais nas categorias frutas, peixes, doces e produtos premium (este último em ofertas).
 
-* **Cluster B (média renda, guiado por promoções):** cliente com média de 60 anos, média renda, possui ensino superior, usualmente casado e aposentadot, geralmente possui 2 filhos adultos. Suas compras são guiadas por promoções e descontos, também não sendo fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa e esse tipo de cliente está sempre em busca de custo-benefício para atender às suas necessidades. Seu objetivo é economizar para garantir um futuro financeiro estável e aproveitar a aposentadoria sem preocupações. Gasta consideravelmente comprado ao cluster de baixa renda. Costuma gastar em vinhos e carnes.
+* **Cluster B (média renda, guiado por promoções):** cliente com média de 60 anos, média renda, possui ensino superior, usualmente casado e aposentado, geralmente possui 2 filhos adultos. Suas compras são guiadas por promoções e descontos, também não sendo fiel a marcas específicas. Sua resposta a campanhas de marketing é baixa e esse tipo de cliente está sempre em busca de custo-benefício para atender às suas necessidades. Seu objetivo é economizar para garantir um futuro financeiro estável e aproveitar a aposentadoria sem preocupações. Gasta consideravelmente comparado ao cluster de baixa renda. Costuma gastar em vinhos e carnes.
 
 * **Cluster C (renda média-alta, cliente fidelizado, guiado pelo mix de preço e valor):** cliente com média de 60 anos, renda média-alta, pós-graduado, casado e normalmente possui 1 único filho. Valoriza produtos de excelência/marca e é um cliente fiel (grupo há mais tempo como cliente). Esse tipo de cliente compra tanto online quanto em lojas físicas e responde relativamente bem a campanhas de marketing. Além disso, pode-se dizer que é bem sensível a descontos. Suas compras são guiadas pela qualidade e pelo desejo de economizar sem comprometer a excelência dos produtos. Ele busca desfrutar de um estilo de vida sofisticado e tem como objetivo continuar explorando novas experiências gastronômicas. Costuma gastar mais com vinhos e produtos premium.
 
