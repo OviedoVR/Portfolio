@@ -8,7 +8,7 @@ lang: pt-br
 
 Um investidor de imóveis deseja buscar oportunidades nos Estados Unidos (EUA) logo que elas surgem em certa localidade (a entrada é um código postal ou uma localidade). Para isso, existem diversas plataformas que anunciam imóveis para compra e venda, como é o caso da Zillow. 
 
-![](assets/RealEstate-analytics.png){width=90%}
+![](RealEstate-analytics.png){width=90%}
 
 Essa plataforma, portanto, disponibiliza uma série de dados e informações sobre esses imóveis. No entanto, o investidor demanda de uma solução data-driven que o permita:
 

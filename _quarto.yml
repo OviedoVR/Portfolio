@@ -8,12 +8,16 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: segmentation.qmd
-        text: Segmentação de clientes
-      - href: realestate.qmd
-        text: Oportunidades em Real Estate (Zillow, EUA)   
-      - href: churn.qmd
-        text: Análise de churn     
+      - text: Projetos
+        menu:       
+        - href: projects/segmentation/segmentation.qmd
+          text: Segmentação de clientes com Machine Learning
+        - href: projects/churn/churn.qmd
+          text: Redução da taxa de churn  
+        - href: projects/realestate/realestate.qmd
+          text: Oportunidades em Real Estate (Zillow, EUA) 
+        #- href: projects/maximizing_sales/maximizing_sales.qmd
+        #  text: Maximizando a receita em uma coffee store    
 
 format:
   html:
@@ -25,6 +29,3 @@ format:
     code-block-border-left: false
     code-line-numbers: false
     highlight-style: haddock
-
-
-

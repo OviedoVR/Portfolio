@@ -10,7 +10,7 @@ Uma empresa do varejo deseja aumentar suas vendas e otimizar campanhas de market
 
 Nesse sentido, implementar um algoritmo de agrupamento (clusterização) sobre essa base pode ser de grande valia para o négócio.
 
-![](assets/clustering-illustration.png){width=90%}
+![](clustering-illustration.png){width=90%}
 
 O método utilizado nesse projeto foi o CRISP-DM e a execução se deu via linguagem de programação Python.
 
@@ -143,7 +143,7 @@ A etapa de modelagem se deu via algoritmo K-means, um algoritmo de aprendizado n
 
 Logo, 3-4 clusters já seria um bom chute inicial (o número foi posteriormente validado pelo método do cotovelo). Quanto ao funcionamento, o algoritmo K-means (Figura 1) funciona da seguinte maneira:
 
-![Figura 1: Funcionamento do algoritmo K-means](assets/kmeans.png){width=70%}
+![Figura 1: Funcionamento do algoritmo K-means](kmeans.png){width=70%}
 
 1. É informado um número de clusters inicial (cujo centro de cada cluster é calculado);
 2. A distância de cada ponto versus o centro de cada cluster é calculada. Dessa forma, atribui-se a cada observação o cluster cuja distância em relação ao seu centro é menor.

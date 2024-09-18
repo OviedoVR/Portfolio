@@ -8,7 +8,7 @@ lang: pt-br
 
 A Telecom (empresa do setor de telefonia e comunicações) deseja **reduzir a taxa churn** da sua base de clientes. Em outras palavas, ela quer reduzir o percentual de clientes que cancelam a assinatura de seus produtos/serviços. Para isso, disponibilizou-se dados históricos onde se busca a extração insights que podem contribuir para a redução do churn por parte do negócio. 
 
-![](assets/churn-cover.png){width=90%}
+![](churn-cover.png){width=90%}
 
 Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via MS Excel. No entanto, nesta página você encontra as mesmas análises de maneira interativa (fundamentada em Python e Quarto Markdown).
 

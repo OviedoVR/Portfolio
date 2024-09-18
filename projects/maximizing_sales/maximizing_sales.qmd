@@ -1,0 +1,62 @@
+---
+title: "Maximizando vendas em uma Coffee Store"
+author: "Vinícius Oviedo"
+lang: pt-br
+---
+
+# Contexto 
+
+Uma Coffee Store **maximizar as receitas** e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo. 
+
+![](coffee.jpg){width=90%}
+
+Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via Google Sheets e Looker Studio.
+
+::: {.callout-note title="Nota"}
+O arquivo em MS Excel pode ser encontrado [aqui](https://github.com/OviedoVR/Portfolio/blob/main/analise_de_churn.xlsx).
+:::
+
+# Entendimento do negócio
+
+## Objetivo
+
+Compreender o cenário de vendas atual e extrair insights que permitam maximizar a receita da Coffee Store.
+
+## Premissas
+
+Como premissas para o projeto, tem-se:
+
+- Os dados são representativos e atualizados.
+- Os dados datam de 2023-06-15 a 2023-06-30 (janela de 15 dias).
+- Não se está considerando o efeito da sazonalidade, nem períodos atípicos no quesito a precificações e ofertas, como a Black Friday.
+
+## Critérios de sucesso
+
+Encontrar oportunidades onde:
+
+* Estimar o cenário das vendas para o período estuado.
+* Extrair insights acionáveis que permitam maximizar as receitas.
+
+# Entendimento dos dados
+
+O dataset original constou de 19.003 linhas e 12 colunas. Como metadados, tem-se para as principais colunas:
+
+| Coluna                 | Descrição                                                                      |
+|------------------------|--------------------------------------------------------------------------------|
+| `transaction_id`       | ID sequencial único que representa uma transação individual                    |
+| `transaction_date`     | Data da transação (MM/DD/AA)                                                   |
+| `transaction_time`     | Horário da transação (HH:MM:SS)                                                |
+| `transaction_qty`      | Quantidade de itens vendidos                                                   |
+| `store_id`             | ID único do café onde a transação ocorreu                                      |
+| `store_location`       | Localização do café onde a transação ocorreu                                   |
+| `product_id`           | ID único do produto vendido                                                    |
+| `unit_price`           | Preço de varejo do produto vendido                                             |
+| `product_category`     | Descrição da categoria do produto                                              |
+| `product_type`         | Descrição do tipo de produto                                                   |
+| `product_detail`       | Descrição detalhada do produto                                                 |
+
+
+# Análise/Modelagem
+
+
+# Validação e Deploy

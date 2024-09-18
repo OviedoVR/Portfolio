@@ -12,3 +12,11 @@ table caption {
     font-weight: bold;
     font-size: 1em; /* Ajuste o tamanho da legenda conforme necessário */
 }
+
+/* Estilizar tabelas */
+table.dataframe {
+    background-color: white;  /* Cor de fundo das tabelas */
+    color: #333;            /* Cor da fonte */
+    border: 1px solid white; /* Bordas */
+    text-align: center;      /* Alinhamento */
+}
