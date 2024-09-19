@@ -12,12 +12,12 @@ website:
         menu:       
         - href: projects/segmentation/segmentation.qmd
           text: Segmentação de clientes com Machine Learning
+        - href: projects/maximizing_sales/maximizing_sales.qmd
+          text: Maximizando a receita em uma coffee store          
         - href: projects/churn/churn.qmd
           text: Redução da taxa de churn  
         - href: projects/realestate/realestate.qmd
-          text: Oportunidades em Real Estate (Zillow, EUA) 
-        #- href: projects/maximizing_sales/maximizing_sales.qmd
-        #  text: Maximizando a receita em uma coffee store    
+          text: Oportunidades em Real Estate (Zillow, EUA)   
 
 format:
   html:

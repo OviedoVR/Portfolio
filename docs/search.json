@@ -46,7 +46,7 @@
     "href": "projects/maximizing_sales/maximizing_sales.html",
     "title": "Maximizando vendas em uma Coffee Store",
     "section": "",
-    "text": "Uma Coffee Store maximizar as receitas e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo.\n\nNesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via Google Sheets e Looker Studio.\n\n\n\n\n\n\nNota\n\n\n\nO arquivo em MS Excel pode ser encontrado aqui."
+    "text": "Uma Coffee Store deseja maximizar as receitas e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo.\n\nNesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via Google Sheets e Looker Studio."
   },
   {
     "objectID": "projects/maximizing_sales/maximizing_sales.html#objetivo",
@@ -60,7 +60,7 @@
     "href": "projects/maximizing_sales/maximizing_sales.html#premissas",
     "title": "Maximizando vendas em uma Coffee Store",
     "section": "Premissas",
-    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nOs dados são representativos e atualizados.\nOs dados datam de 2023-06-15 a 2023-06-30 (janela de 15 dias).\nNão se está considerando o efeito da sazonalidade, nem períodos atípicos no quesito a precificações e ofertas, como a Black Friday."
+    "text": "Premissas\nComo premissas para o projeto, tem-se:\n\nOs dados são representativos e atualizados.\nOs dados datam de 2023-06-15 a 2023-06-30 (janela de 15 dias).\nNão se está considerando o efeito da sazonalidade, nem períodos atípicos relacionado a ofertas, como a Black Friday."
   },
   {
     "objectID": "projects/maximizing_sales/maximizing_sales.html#critérios-de-sucesso",
@@ -68,6 +68,13 @@
     "title": "Maximizando vendas em uma Coffee Store",
     "section": "Critérios de sucesso",
     "text": "Critérios de sucesso\nEncontrar oportunidades onde:\n\nEstimar o cenário das vendas para o período estuado.\nExtrair insights acionáveis que permitam maximizar as receitas."
+  },
+  {
+    "objectID": "projects/maximizing_sales/maximizing_sales.html#insights-e-recomendações",
+    "href": "projects/maximizing_sales/maximizing_sales.html#insights-e-recomendações",
+    "title": "Maximizando vendas em uma Coffee Store",
+    "section": "Insights e recomendações",
+    "text": "Insights e recomendações\n\nCategorias de produto que geram a maior parte dos resultados (lei de Pareto):\n\n\nAstoria: café e chá\nHell’s Kitchen: café, chá e padaria\nLower Manhattan: café, chá e padaria\n\n\nMelhores períodos/turnos para venda:\n\n\nAs maiores vendas (receita) ocorrem no período da manhã (ofertas/promoções personalizadas são bem-vindas neste período)\nPara padronizar todas as lojas e evitar prejuízos: considerar excluir o horário das 20h do horário de funcionamento.\nFechar a loja “Lower Manhattan” às 18h pode diminuir os custos operacionais (vendas muito baixas após esse horário)\n\n\nTendências:\n\n\nCategoria de produto: as vendas de Café e Padaria são mais estáveis ​​que as de Chá\nOs produtos podem ser segmentados em 3 categorias: críticos, de alto volume de vendas e de alta receita (em termos de desempenho)\nO preço dos produtos com alto volume de vendas poderia ser aumentado em 1-2%? Isso certamente vai impactar no lucro.\nDeterminar a elasticidade de preço para os produtos com bom desempenho\nProdutos críticos têm preço unitário alto (~4,5x o preço unitário médio de produtos com bom desempenho)\n“Civet Cat” é um valor atípico em termos de preço unitário (muito discrepante de outros produtos) - o que justifica esse ticket tão alto?"
   },
   {
     "objectID": "index.html",

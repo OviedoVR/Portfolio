@@ -6,15 +6,12 @@ lang: pt-br
 
 # Contexto 
 
-Uma Coffee Store **maximizar as receitas** e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo. 
+Uma Coffee Store deseja **maximizar as receitas** e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo. 
 
-![](coffee.jpg){width=90%}
+![](coffee.jpg){width=60%}
 
 Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via Google Sheets e Looker Studio.
 
-::: {.callout-note title="Nota"}
-O arquivo em MS Excel pode ser encontrado [aqui](https://github.com/OviedoVR/Portfolio/blob/main/analise_de_churn.xlsx).
-:::
 
 # Entendimento do negócio
 
@@ -28,7 +25,7 @@ Como premissas para o projeto, tem-se:
 
 - Os dados são representativos e atualizados.
 - Os dados datam de 2023-06-15 a 2023-06-30 (janela de 15 dias).
-- Não se está considerando o efeito da sazonalidade, nem períodos atípicos no quesito a precificações e ofertas, como a Black Friday.
+- Não se está considerando o efeito da sazonalidade, nem períodos atípicos relacionado a ofertas, como a Black Friday.
 
 ## Critérios de sucesso
 
@@ -44,8 +41,8 @@ O dataset original constou de 19.003 linhas e 12 colunas. Como metadados, tem-se
 | Coluna                 | Descrição                                                                      |
 |------------------------|--------------------------------------------------------------------------------|
 | `transaction_id`       | ID sequencial único que representa uma transação individual                    |
-| `transaction_date`     | Data da transação (MM/DD/AA)                                                   |
-| `transaction_time`     | Horário da transação (HH:MM:SS)                                                |
+| `transaction_date`     | Data da transação                                                              |
+| `transaction_time`     | Horário da transação                                                           |
 | `transaction_qty`      | Quantidade de itens vendidos                                                   |
 | `store_id`             | ID único do café onde a transação ocorreu                                      |
 | `store_location`       | Localização do café onde a transação ocorreu                                   |
@@ -58,5 +55,67 @@ O dataset original constou de 19.003 linhas e 12 colunas. Como metadados, tem-se
 
 # Análise/Modelagem
 
+Num primeiro momento, novas colunas foram geradas via funcionalidade de **Campo Calculado** 
+disponível no Google Looker Studio:
+
+
+* Receita por produto (em USD), nomeada como `product_revenue`:
+
+\begin{equation}
+    \textrm{Receita por produto} = \textrm{Preço unitário} \times \textrm{Quantidade vendida}
+\end{equation}
+
+
+* Ticket médio, nomeada como `Avg_ticket`, que representa o valor médio (USD) gerado por vendas:
+
+\begin{equation}
+        \textrm{Ticket médio} = \frac{ \textrm{Receita por produto} }{ COUNT(\textrm{ID da transação}) }
+\end{equation}
+
+Por meio de análise exploratória, constatou-se que a Coffee Store possui:
+
+- 80 produtos 
+- 9 categorias
+- 29 tipos de produto
+- 3 stores em localidades distintas (Astoria, Hell's Kitchen e Lower Manhattan)  
+
+::: {.callout-note title="Nota"}
+O dashboard final pode ser encontrado abaixo (fique à vontade para navegar entre as páginas do relatório). Caso queira visualizar dentro do Google Looker Studio, acesse [aqui](https://lookerstudio.google.com/s/iMzxfZm1Wa4)).
+:::
+
+<iframe width="100%" height="1200" src="https://lookerstudio.google.com/embed/reporting/53fb9110-6f81-4188-ab47-f385f1ce8498/page/oAFkD" frameborder="0" style="border:0" allowfullscreen sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+
+
+## Insights e recomendações
+
+> **Categorias de produto que geram a maior parte dos resultados (lei de Pareto):**
+
+- **Astoria**: café e chá
+- **Hell's Kitchen**: café, chá e padaria
+- **Lower Manhattan**: café, chá e padaria
+
+> **Melhores períodos/turnos para venda:**
+
+- As maiores vendas (receita) ocorrem no período da **manhã** 
+(ofertas/promoções personalizadas são bem-vindas neste período)
+- Para padronizar todas as lojas e evitar prejuízos: considerar 
+**excluir** o **horário das 20h** do horário de funcionamento.
+- Fechar a loja "Lower Manhattan" às **18h** pode **diminuir** os custos operacionais 
+(vendas muito baixas após esse horário)
+
+> **Tendências:**
+
+- Categoria de produto: as vendas de **Café** e **Padaria** são mais estáveis ​​que as de Chá
+- Os produtos podem ser segmentados em 3 categorias: **críticos**, de **alto volume** de vendas 
+e de **alta receita** (em termos de desempenho)
+- O preço dos produtos com alto volume de vendas poderia ser aumentado em **1-2%**? Isso certamente vai impactar no lucro.
+- Determinar a elasticidade de preço para os produtos com bom desempenho
+- Produtos **críticos** têm **preço unitário alto** (~4,5x o preço unitário médio de produtos com bom desempenho)
+- "**Civet Cat**" é um valor **atípico** em termos de preço unitário (muito discrepante de outros produtos) - o que justifica esse ticket tão alto?
+
 
 # Validação e Deploy
+
+Após validação dos critérios de sucesso e aprovação do dashboard, os dados podem ser atualizados constantemente e de maneira escalável.
+É interessante validar com o negócio qual a periodicidade ideal para realizar novas análises das receitas. Cabe mencionar 
+que o usuário final pode filtrar os dados no relatório e exportar o PDF com a seleção em questão.

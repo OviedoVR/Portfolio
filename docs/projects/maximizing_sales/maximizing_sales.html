@@ -68,6 +68,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -96,6 +125,10 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../../projects/segmentation/segmentation.html">
  <span class="dropdown-text">Segmentação de clientes com Machine Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../projects/maximizing_sales/maximizing_sales.html">
+ <span class="dropdown-text">Maximizando a receita em uma coffee store</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="../../projects/churn/churn.html">
@@ -149,22 +182,9 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="contexto" class="level1">
 <h1>Contexto</h1>
-<p>Uma Coffee Store <strong>maximizar as receitas</strong> e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo.</p>
-<p><img src="coffee.jpg" class="img-fluid" style="width:90.0%"></p>
+<p>Uma Coffee Store deseja <strong>maximizar as receitas</strong> e , para isso, disponibilizou dados históricos visando a extração insights que podem contribuir para tal objetivo.</p>
+<p><img src="coffee.jpg" class="img-fluid" style="width:60.0%"></p>
 <p>Nesse projeto, o método utilizado foi o CRISP-DM e a execução se deu originalmente via Google Sheets e Looker Studio.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Nota">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Nota
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>O arquivo em MS Excel pode ser encontrado <a href="https://github.com/OviedoVR/Portfolio/blob/main/analise_de_churn.xlsx">aqui</a>.</p>
-</div>
-</div>
 </section>
 <section id="entendimento-do-negócio" class="level1">
 <h1>Entendimento do negócio</h1>
@@ -178,7 +198,7 @@ Nota
 <ul>
 <li>Os dados são representativos e atualizados.</li>
 <li>Os dados datam de 2023-06-15 a 2023-06-30 (janela de 15 dias).</li>
-<li>Não se está considerando o efeito da sazonalidade, nem períodos atípicos no quesito a precificações e ofertas, como a Black Friday.</li>
+<li>Não se está considerando o efeito da sazonalidade, nem períodos atípicos relacionado a ofertas, como a Black Friday.</li>
 </ul>
 </section>
 <section id="critérios-de-sucesso" class="level2">
@@ -211,11 +231,11 @@ Nota
 </tr>
 <tr class="even">
 <td><code>transaction_date</code></td>
-<td>Data da transação (MM/DD/AA)</td>
+<td>Data da transação</td>
 </tr>
 <tr class="odd">
 <td><code>transaction_time</code></td>
-<td>Horário da transação (HH:MM:SS)</td>
+<td>Horário da transação</td>
 </tr>
 <tr class="even">
 <td><code>transaction_qty</code></td>
@@ -254,9 +274,75 @@ Nota
 </section>
 <section id="análisemodelagem" class="level1">
 <h1>Análise/Modelagem</h1>
+<p>Num primeiro momento, novas colunas foram geradas via funcionalidade de <strong>Campo Calculado</strong> disponível no Google Looker Studio:</p>
+<ul>
+<li>Receita por produto (em USD), nomeada como <code>product_revenue</code>:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+    \textrm{Receita por produto} = \textrm{Preço unitário} \times \textrm{Quantidade vendida}
+\end{equation}\]</span></p>
+<ul>
+<li>Ticket médio, nomeada como <code>Avg_ticket</code>, que representa o valor médio (USD) gerado por vendas:</li>
+</ul>
+<p><span class="math display">\[\begin{equation}
+        \textrm{Ticket médio} = \frac{ \textrm{Receita por produto} }{ COUNT(\textrm{ID da transação}) }
+\end{equation}\]</span></p>
+<p>Por meio de análise exploratória, constatou-se que a Coffee Store possui:</p>
+<ul>
+<li>80 produtos</li>
+<li>9 categorias</li>
+<li>29 tipos de produto</li>
+<li>3 stores em localidades distintas (Astoria, Hell’s Kitchen e Lower Manhattan)</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="Nota">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O dashboard final pode ser encontrado abaixo (fique à vontade para navegar entre as páginas do relatório). Caso queira visualizar dentro do Google Looker Studio, acesse <a href="https://lookerstudio.google.com/s/iMzxfZm1Wa4">aqui</a>).</p>
+</div>
+</div>
+<iframe width="100%" height="1200" src="https://lookerstudio.google.com/embed/reporting/53fb9110-6f81-4188-ab47-f385f1ce8498/page/oAFkD" frameborder="0" style="border:0" allowfullscreen="" sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+</iframe>
+<section id="insights-e-recomendações" class="level2">
+<h2 class="anchored" data-anchor-id="insights-e-recomendações">Insights e recomendações</h2>
+<blockquote class="blockquote">
+<p><strong>Categorias de produto que geram a maior parte dos resultados (lei de Pareto):</strong></p>
+</blockquote>
+<ul>
+<li><strong>Astoria</strong>: café e chá</li>
+<li><strong>Hell’s Kitchen</strong>: café, chá e padaria</li>
+<li><strong>Lower Manhattan</strong>: café, chá e padaria</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Melhores períodos/turnos para venda:</strong></p>
+</blockquote>
+<ul>
+<li>As maiores vendas (receita) ocorrem no período da <strong>manhã</strong> (ofertas/promoções personalizadas são bem-vindas neste período)</li>
+<li>Para padronizar todas as lojas e evitar prejuízos: considerar <strong>excluir</strong> o <strong>horário das 20h</strong> do horário de funcionamento.</li>
+<li>Fechar a loja “Lower Manhattan” às <strong>18h</strong> pode <strong>diminuir</strong> os custos operacionais (vendas muito baixas após esse horário)</li>
+</ul>
+<blockquote class="blockquote">
+<p><strong>Tendências:</strong></p>
+</blockquote>
+<ul>
+<li>Categoria de produto: as vendas de <strong>Café</strong> e <strong>Padaria</strong> são mais estáveis ​​que as de Chá</li>
+<li>Os produtos podem ser segmentados em 3 categorias: <strong>críticos</strong>, de <strong>alto volume</strong> de vendas e de <strong>alta receita</strong> (em termos de desempenho)</li>
+<li>O preço dos produtos com alto volume de vendas poderia ser aumentado em <strong>1-2%</strong>? Isso certamente vai impactar no lucro.</li>
+<li>Determinar a elasticidade de preço para os produtos com bom desempenho</li>
+<li>Produtos <strong>críticos</strong> têm <strong>preço unitário alto</strong> (~4,5x o preço unitário médio de produtos com bom desempenho)</li>
+<li>“<strong>Civet Cat</strong>” é um valor <strong>atípico</strong> em termos de preço unitário (muito discrepante de outros produtos) - o que justifica esse ticket tão alto?</li>
+</ul>
+</section>
 </section>
 <section id="validação-e-deploy" class="level1">
 <h1>Validação e Deploy</h1>
+<p>Após validação dos critérios de sucesso e aprovação do dashboard, os dados podem ser atualizados constantemente e de maneira escalável. É interessante validar com o negócio qual a periodicidade ideal para realizar novas análises das receitas. Cabe mencionar que o usuário final pode filtrar os dados no relatório e exportar o PDF com a seleção em questão.</p>
 
 
 </section>
