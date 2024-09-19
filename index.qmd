@@ -14,6 +14,10 @@ Você pode acessá-los por meio da guia de navegação no topo da página.
 
 ![](assets/clustering-illustration.png){width=90%}
 
+## **Maximizando a receita em uma Coffee Store**
+
+![](assets/coffee.jpg){width=40%}
+
 ## **Análise de churn**
 
 ![](assets/churn-cover.png){width=70%}
