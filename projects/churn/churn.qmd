@@ -95,12 +95,12 @@ No contexto desse projeto, a análise de IV nos indica o quanto cada variável c
 
 | Variável        | IV    | Poder de separação quanto ao   churn |
 |-----------------|-------|--------------------------------------|
-| Contract        | 1,24  | Muito forte                          |
-| Tenure          | 0,71  | muito forte                          |
+| Contract        | 0,49  | forte                                |
 | PaymentMethod   | 0,46  | forte                                |
 | TechSupport     | 0,39  | forte                                |
 | MonthlyCharges  | 0,37  | forte                                |
 | Dependents      | 0,16  | médio                                |
+| Tenure          | 0,14  | médio                                | 
 | TotalCharges    | 0,06  | fraco                                |
 | Partner         | 0,012 | muito fraco                          |
 | PhoneService    | 0,010 | muito fraco                          |
